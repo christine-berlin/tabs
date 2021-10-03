@@ -36,4 +36,5 @@ Click the select musicxml file and convert button. Then select a musicxml
 or mxl file. Then a tabfile will be generated. A musicxml or mxl file can be
 created by Programs like Musescore or Audiveris from a pdf file or a Pic.
 
-
+## Release 
+Find the release and download for Linux/Unix and Windows here:  ![Release](https://github.com/christine-berlin/tabs/releases)
