@@ -98,25 +98,6 @@ public class MyPanel extends JPanel
         g.drawLine(60,  90, 125+90, 90);
         g.drawLine(60, 120, 125+90, 120);
 
-
-
-        /*
-         * g.setColor(Color.MAGENTA); g.drawLine(10, 450, 165+50, 450); g.drawLine(10,
-         * 480, 165+50, 480); g.drawLine(10, 510, 165+50, 510); g.drawLine(10, 540,
-         * 165+50, 540);
-         *
-         * g.drawLine(10, 449, 165+50, 449); g.drawLine(10, 479, 165+50, 479);
-         * g.drawLine(10, 509, 165+50, 509); g.drawLine(10, 539, 165+50, 539);
-         *
-         * g.drawLine(10, 451, 165+50, 451); g.drawLine(10, 481, 165+50, 481);
-         * g.drawLine(10, 511, 165+50, 511); g.drawLine(10, 541, 165+50, 541);
-         *
-         *
-         * g.drawRect(110, 440, 20, 20); g.drawRect(110, 470, 20, 20); g.drawRect(110,
-         * 500, 20, 20); g.drawRect(110, 530, 20, 20);
-         */
-
-
         g.setColor(Color.CYAN);
         if(N[1]) g.fillOval(60+50, 330, 30, 30);
         if(N[3]) g.fillOval(60+50, 300, 30, 30);
