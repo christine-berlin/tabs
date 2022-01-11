@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XML_parser {
+	
 	public static String piano_part_id ="";
     public static String step = "";
     public static String octave= "";

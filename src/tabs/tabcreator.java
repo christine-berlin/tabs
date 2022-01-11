@@ -46,14 +46,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class tabcreator {
-    /**public static String piano_part_id ="";
-    public static String step = "";
-    public static String octave= "";
-    public static String alter = "";
-    public static Node pitch = null;
-    public static Node staff = null;
-    public static boolean chord = false;
-    public static boolean alter_ = false;*/
     public static String fileName = "data.txt";
     public static JFrame myframe;
     public static JPanel panel, buttonpanel, buttonpanel2;
