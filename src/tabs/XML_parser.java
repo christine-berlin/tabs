@@ -16,8 +16,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XML_parser {
-	
-	public static String piano_part_id ="";
+    public static String piano_part_id ="";
     public static String step = "";
     public static String octave= "";
     public static String alter = "";
@@ -25,8 +24,8 @@ public class XML_parser {
     public static Node staff = null;
     public static boolean chord = false;
     public static boolean alter_ = false;
-	
-	public void parse(File xmlfile){
+    
+    public void parse(File xmlfile){
 		boolean line_end = false;
         int last= -1; //0 if 'no', 1 if 'chord'
         int now = -1; //0 if 'no', 1 if 'chord'
