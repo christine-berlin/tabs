@@ -18,9 +18,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -62,7 +64,6 @@ public class tabcreator {
     public static JButton buttonselectmusicXML, buttonlowG, buttonhighG ,convertbutton, clearbutton, makeTABfile, barline, showAll, tabCombinations;
     public static Point mousePT;
     static int[] result = new int[]{-1,-1,-1,-1};
-    //public static String path="C:\\Users\\name\\workspace\\Test.txt";
     public static int numberofnotes;
     public static int[][] tabmatrix;
     public static boolean bar2 = false;
@@ -241,169 +242,133 @@ public class tabcreator {
         bar2=false;
     }
 
-    public static void find_all() {
-        ArrayList wo = new ArrayList();
-        numberofnotes=0;
+    public static void find_all_tabs() {
+    	ArrayList notes = new ArrayList();
+    	initialize_notes(notes);
+
+        tabmatrix = new int[notes.size()][4];
+
+        for(int v=0;v<notes.size();v++)
+        {
+            int t= (int) notes.get(v); 
+            if(MyPanel.lowG) tabmatrix[v]=PSaiten[t];
+            if(MyPanel.highG) tabmatrix[v]=PSaitenHighG[t];
+        }
+        
+        for(int i=0;i<tabmatrix[0].length;i++)
+        {
+        	if(tabmatrix.length>=2) 
+        	{
+        		for(int j=0;j<tabmatrix[1].length;j++)
+                {
+        			if(tabmatrix.length>=3) 
+                	{
+        				for(int k=0;k<tabmatrix[2].length;k++)
+                        {
+        					if(tabmatrix.length>=4) 
+                        	{
+        						for(int l=0;l<tabmatrix[3].length;l++)
+                                {
+                                    if((i!=j) && (j!=k) && (k!=i) && (l!=k) && (l!=j) && (l!=i))
+                                    {
+                                        if((tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1)&& (tabmatrix[3][l]!=-1))
+                                        {
+                                            panel_text_all_tabs(new int[] {i,j,k,l});
+                                            append_string(new int[] {i,j,k,l});
+                                        }
+                                    }
+                                } 	
+                        	}
+        					
+        					else
+        					{
+        						if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1) && (i!=k) && (k!=j))
+                                { 
+                                    panel_text_all_tabs(new int[] {i,j,k});
+                                    append_string(new int[] {i,j,k});
+                                }
+        					}
+                        }
+                	}
+        			
+        			else
+        			{
+        				if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
+        				{
+        					panel_text_all_tabs(new int[] {i,j});
+        					append_string(new int[]{i,j});
+        				}    
+        			}        			
+                }
+        	}
+        	
+        	else
+        	{
+        		if(tabmatrix[0][i]!=-1)
+                {
+        		    panel_text_all_tabs(new int[] {i});
+                    append_string(new int[] {i});
+                }
+        	}
+        }    
+    }
+    
+    public static void panel_text_all_tabs(int[] j) {
+    	String[] str = new String[j.length] ;
+    	for (int i = 0; i<j.length; i++) {
+    		str[i] = "";
+    		if (tabmatrix[i][j[i]] < 10) str[i] += "  ";
+    		MyPanel.alltabs[j[i]] += str[i]+String.valueOf(tabmatrix[i][j[i]]) +" ";
+    	}
+   
+    }
+    
+    public static void append_string(int[] i) {
+    	for(int t=0;t<4;t++) {
+    		int check = t;
+    		if (!IntStream.of(i).anyMatch(x -> x == check)) {
+                MyPanel.alltabs[t] += "     ";
+    		}
+        }
+    }
+    
+    public static void initialize_notes(ArrayList notes) {
+    	numberofnotes=0;
         for (int i=0;i<MyPanel.P.length;i++)
         {
             if (MyPanel.P[i]==true) {
                 numberofnotes++;
-                wo.add(i);
-            }
-        }
-
-        tabmatrix = new int[numberofnotes][4];
-
-        for(int v=0;v<numberofnotes;v++)
-        {
-            int t= (int) wo.get(v);
-            if(MyPanel.lowG) tabmatrix[v]=PSaiten[t];
-            if(MyPanel.highG) tabmatrix[v]=PSaitenHighG[t];
-        }
-
-        if(tabmatrix.length==1)
-        {
-            for(int j=0;j<tabmatrix[0].length;j++)
-            {
-                if(tabmatrix[0][j]!=-1)
-                {
-                    String strj = "";
-                    if(tabmatrix[0][j]<10) strj += "  ";
-                    MyPanel.alltabs[j] += String.valueOf(strj+tabmatrix[0][j]);
-                }
-            }
-        }
-
-        if(tabmatrix.length==2)
-        {
-            for(int i=0;i<tabmatrix[0].length;i++)
-            {
-                for(int j=0;j<tabmatrix[1].length;j++)
-                {
-                    if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
-                    {
-                        String stri = "";
-                        String strj = "";
-                        if (tabmatrix[0][i] < 10) stri += "  ";
-                        if (tabmatrix[1][j] < 10) strj += "  ";
-                        MyPanel.alltabs[i] += stri+String.valueOf(tabmatrix[0][i]) +" ";
-                        MyPanel.alltabs[j] += strj+String.valueOf(tabmatrix[1][j]) +" ";
-                        for(int t=0;t<4;t++) {
-                            if((t!=i) && (t!=j)) {
-                                MyPanel.alltabs[t] += "     ";
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if(tabmatrix.length==3)
-        {
-            for(int i=0;i<tabmatrix[0].length;i++)
-            {
-                for(int j=0;j<tabmatrix[1].length;j++)
-                {
-                    for(int k=0;k<tabmatrix[2].length;k++)
-                    {
-                        if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1) && (i!=k) && (k!=j))
-                        {
-                            String stri = "";
-                            String strj = "";
-                            String strk = "";
-                            if (tabmatrix[0][i] < 10) stri += "  ";
-                            if (tabmatrix[1][j] < 10) strj += "  ";
-                            if (tabmatrix[2][k] < 10) strk += "  ";
-                            MyPanel.alltabs[i] += stri+String.valueOf(tabmatrix[0][i]) +" ";
-                            MyPanel.alltabs[j] += strj+String.valueOf(tabmatrix[1][j]) +" ";
-                            MyPanel.alltabs[k] += strk+String.valueOf(tabmatrix[2][k]) +" ";
-                            for(int t=0;t<4;t++) {
-                                if((t!=i) && (t!=j) && (t!=k)) {
-                                    MyPanel.alltabs[t] += "     ";
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if(tabmatrix.length==4)
-        {
-            for(int i=0;i<tabmatrix[0].length;i++)
-            {
-                for(int j=0;j<tabmatrix[1].length;j++)
-                {
-                    for(int k=0;k<tabmatrix[2].length;k++)
-                    {
-                        for(int l=0;l<tabmatrix[3].length;l++)
-                        {
-                            if((i!=j) && (j!=k) && (k!=i) && (l!=k) && (l!=j) && (l!=i))
-                            {
-                                if((tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1)&& (tabmatrix[3][l]!=-1))
-                                {
-                                    String stri = "";
-                                    String strj = "";
-                                    String strk = "";
-                                    String strl = "";
-                                    if (tabmatrix[0][i] < 10) stri += "  ";
-                                    if (tabmatrix[1][j] < 10) strj += "  ";
-                                    if (tabmatrix[2][k] < 10) strk += "  ";
-                                    if (tabmatrix[3][l] < 10) strl += "  ";
-                                    MyPanel.alltabs[i] += stri+String.valueOf(tabmatrix[0][i]) +" ";
-                                    MyPanel.alltabs[j] += strj+String.valueOf(tabmatrix[1][j]) +" ";
-                                    MyPanel.alltabs[k] += strk+String.valueOf(tabmatrix[2][k]) +" ";
-                                    MyPanel.alltabs[l] += strl+String.valueOf(tabmatrix[3][l]) +" ";
-                                    for(int t=0;t<4;t++) {
-                                        if((t!=i) && (t!=j) && (t!=k) && (t!=l)) {
-                                            MyPanel.alltabs[t] += "     ";
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                notes.add(i);
             }
         }
     }
 
-    public static void find_tab()
+    public static void find_best_tab()
     {
-        ArrayList wo = new ArrayList();
-        int[] w = new int[]{-1,-1,-1,-1};
+        ArrayList notes = new ArrayList();
         List<MyArray> paths = new ArrayList<MyArray>();
+        initialize_notes(notes);
+        int tab = 0;
+       
+        tabmatrix = new int[notes.size()][4];
 
-        numberofnotes=0;
-        for (int i=0;i<MyPanel.P.length;i++)
+        for(int v=0;v<notes.size();v++)
         {
-            if (MyPanel.P[i]==true) {
-                numberofnotes++;
-                wo.add(i);
-            }
-        }
-
-        tabmatrix = new int[numberofnotes][4];
-
-        for(int v=0;v<numberofnotes;v++)
-        {
-            int t= (int) wo.get(v);
+            int t= (int) notes.get(v);
             if(MyPanel.lowG) tabmatrix[v]=PSaiten[t];
             if(MyPanel.highG) tabmatrix[v]=PSaitenHighG[t];
         }
 
-        if(tabmatrix.length==1)
+        if(tabmatrix.length==1) 
         {
-            int last=0;
             for(int j=0;j<tabmatrix[0].length;j++)
             {
-                if(tabmatrix[0][j]!=-1)
+                if(tabmatrix[0][j]!=-1) 
                 {
-                    last =j;
+                    MyPanel.tab[j]=tabmatrix[0][j];
+                	return;
                 }
             }
-
-            MyPanel.tab[last]=tabmatrix[0][last];
         }
 
         if(tabmatrix.length==2)
@@ -415,41 +380,6 @@ public class tabcreator {
                     if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
                     {
                         paths.add(new MyArray(tabmatrix[0][i],tabmatrix[1][j],-1,-1));
-                    }
-                }
-            }
-
-            int delta = -1;
-            int tab = -1;
-
-            for(int i=0;i<paths.size();i++)
-            {
-                int[] n = paths.get(i).getItems();
-                int d = Math.abs(n[0]-n[1]);
-                if((delta == -1) || (d<delta))
-                {
-                    delta = d;
-                    tab = i;
-                }
-            }
-
-            if(tab == -1)
-            {
-                for(int i=0;i<tabmatrix[0].length;i++) MyPanel.tab[i]= -1;
-                MyPanel.error = true;
-                String str = "--x----x----x----x--";
-                appendStrToFile("data.txt", str);
-            };
-
-            if(tab > -1)
-            {
-                w = paths.get(tab).getItems();
-
-                for(int j=0;j<2;j++)
-                {
-                    for(int i=0;i<tabmatrix[0].length;i++)
-                    {
-                        if(tabmatrix[j][i]== w[j]) MyPanel.tab[i]= w[j];
                     }
                 }
             }
@@ -467,49 +397,6 @@ public class tabcreator {
                         {
                             paths.add(new MyArray(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],-1));
                         }
-                    }
-                }
-            }
-
-            int delta = -1;
-            int tab = -1;
-
-            for(int i=0; i<paths.size();i++)
-            {
-                int[] n = paths.get(i).getItems();
-                int min = n[0];
-                int max = n[0];
-
-                for(int j=1;j<3/*4*/;j++)
-                {
-                    if (n[j]< min) min = n[j];
-                    if (n[j]> max) max = n[j];
-                }
-
-                int d = max-min;
-                if((i==0) || (d<delta)){
-                    delta = d;
-                    tab = i;
-                }
-            }
-
-            if(tab == -1)
-            {
-                for(int i=0;i<tabmatrix[0].length;i++) MyPanel.tab[i]= -1;
-                MyPanel.error = true;
-                String str = "--x----x----x----x--";
-                appendStrToFile("data.txt", str);
-            };
-
-            if(tab > -1)
-            {
-                w = paths.get(tab).getItems();
-
-                for(int j=0;j<3;j++)
-                {
-                    for(int i=0;i<tabmatrix[0].length;i++)
-                    {
-                        if(tabmatrix[j][i]== w[j]) MyPanel.tab[i]= w[j];
                     }
                 }
             }
@@ -536,49 +423,58 @@ public class tabcreator {
                     }
                 }
             }
+        }   
+        
+        tab = find_shortest_tab(paths);
+        
+        if(tab == -1) append_error_string();
+        
+        if(tab > -1) panel_text_best_tab(paths.get(tab).getItems(), tabmatrix.length);        
+    }
+    
+    public static int find_shortest_tab(List<MyArray> paths) {
+    	int delta = -1;
+        int tab = -1;
+        for(int i=0; i<paths.size();i++)
+        {
+            int[] n = paths.get(i).getItems();
+            int min = n[0];
+            int max = n[0];
 
-            int delta = -1;
-            int tab = -1;
-            for(int i=0; i<paths.size();i++)
+            for(int j=1;j<4;j++)
             {
-                int[] n = paths.get(i).getItems();
-                int min = n[0];
-                int max = n[0];
-
-                for(int j=1;j<4;j++)
-                {
-                    if (n[j]< min) min = n[j];
-                    if (n[j]> max) max = n[j];
-                }
-
-                int d = max-min;
-                if((i==0) || (d<delta)){
-                    delta = d;
-                    tab = i;
-                }
+                if (n[j]< min) min = n[j];
+                if (n[j]> max) max = n[j];
             }
 
-            if(tab == -1)
-            {
-                for(int i=0;i<tabmatrix[0].length;i++) MyPanel.tab[i]= -1;
-                MyPanel.error = true;
-                String str = "--x----x----x----x--";
-                appendStrToFile("data.txt", str);
-            };
-
-            if(tab > -1)
-            {
-                w = paths.get(tab).getItems();
-
-                for(int j=0;j<4;j++)
-                {
-                    for(int i=0;i<tabmatrix[0].length;i++)
-                    {
-                        if(tabmatrix[j][i]== w[j]) MyPanel.tab[i]= w[j];
-                    }
-                }
+            int d = max-min;
+            if((i==0) || (d<delta)){
+                delta = d;
+                tab = i;
             }
         }
+        
+        return tab;
+    }
+    
+    public static void panel_text_best_tab(int[] items, int n) {
+    	int[] w = new int[]{-1,-1,-1,-1};
+    	w = items;
+
+        for(int j=0;j<n;j++)
+        {
+            for(int i=0;i<tabmatrix[0].length;i++)
+            {
+                if(tabmatrix[j][i]== w[j]) MyPanel.tab[i]= w[j];
+            }
+        }
+    }
+    
+    public static void append_error_string() {
+    	for(int i=0;i<tabmatrix[0].length;i++) MyPanel.tab[i]= -1;
+        MyPanel.error = true;
+        String str = "--x----x----x----x--";
+        appendStrToFile("data.txt", str);
     }
 
 
@@ -621,7 +517,7 @@ public class tabcreator {
                     if((str2.compareTo("barline")!=0) && (hash.get(str2) != null)) MyPanel.P[hash.get(str2)] = true;
                 }
 
-                find_tab();
+                find_best_tab();
                 save_tab();
             }
 
@@ -653,7 +549,6 @@ public class tabcreator {
 
             for(int i=0;i<testlist.getLength();i++)
             {
-                //if((testlist.item(i).getTextContent().compareTo("Piano")==0)||(testlist.item(i).getTextContent().compareTo("Klavier")==0))
                 if((testlist.item(i).getTextContent().contains("Pia"))||(testlist.item(i).getTextContent().compareTo("Klavier")==0))
                 {
                     Node scorepart = testlist.item(i).getParentNode();
@@ -897,7 +792,6 @@ public class tabcreator {
 
                 if (mouseEvent.getClickCount() == 2) {
                     mbvalue = !mbvalue;
-                    //mb.setVisible(mbvalue);
                     pm.setVisible(mbvalue);
                     Double x = mousePT.getX();
                     Double y = mousePT.getY();
@@ -1428,7 +1322,6 @@ public class tabcreator {
                             case 9: MyPanel.N[6] = true; MyPanel.B[6] = false; MyPanel.S[6]= false; MyPanel.P[9] = true; break;
                             case 10: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= false; MyPanel.P[10] = true; break;
                             case 11: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= true; MyPanel.P[11] = true; break;
-                            //case 12: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= false; MyPanel.P[12] = true; break;
                         }
                     }
                 }
@@ -1477,7 +1370,8 @@ public class tabcreator {
                 if((MyPanel.N[17])&&((MyPanel.S[17]) || (MyPanel.B[17]))) MyPanel.P[28]=false;
                 if((MyPanel.N[18])&&(MyPanel.B[18])) MyPanel.P[29]=false;
 
-                find_tab();
+                find_best_tab();
+                find_all_tabs();
                 MyPanel.showtab = true;
                 panel.repaint();
             }
@@ -1506,7 +1400,7 @@ public class tabcreator {
                 if((MyPanel.N[17])&&((MyPanel.S[17]) || (MyPanel.B[17]))) MyPanel.P[28]=false;
                 if((MyPanel.N[18])&&(MyPanel.B[18])) MyPanel.P[29]=false;
 
-                find_all();
+                find_all_tabs();
                 MyPanel.showall = true;
                 panel.repaint();
             }
@@ -1671,7 +1565,6 @@ public class tabcreator {
         buttonpanel2.add(barline);
         panel.add(buttonpanel2);
 
-        //mb = new JMenuBar();
         pm = new JPopupMenu();
 
         l1 = new JLabel("String 1:");
@@ -1680,7 +1573,6 @@ public class tabcreator {
         tf1 = new JTextField();
         tf1.setText("     ");
         test1.add(tf1);
-        //mb.add(test1);
         pm.add(test1);
 
         l2 = new JLabel("String 2:");
@@ -1689,7 +1581,6 @@ public class tabcreator {
         tf2 = new JTextField();
         tf2.setText("     ");
         test2.add(tf2);
-        //mb.add(test2);
         pm.add(test2);
 
         l3 = new JLabel("String 3:");
@@ -1698,7 +1589,6 @@ public class tabcreator {
         tf3 = new JTextField();
         tf3.setText("     ");
         test3.add(tf3);
-        //mb.add(test3);
         pm.add(test3);
 
         l4 = new JLabel("String 4:");
@@ -1707,14 +1597,9 @@ public class tabcreator {
         tf4 = new JTextField();
         tf4.setText("     ");
         test4.add(tf4);
-        //mb.add(test4);
+      
         pm.add(test4);
-
-        //mb.setLayout(new BoxLayout(mb, BoxLayout.PAGE_AXIS));
-        //panel.add(mb);
         panel.add(pm);
-
-        //mb.setVisible(false);
         pm.setVisible(false);
         panel.repaint();
 
