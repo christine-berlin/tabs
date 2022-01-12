@@ -14,9 +14,9 @@ What Tabcreator does:
 * <span style="color:grey"> Transcribe piano sheet music ion ukulele tab sheet
 
 ## Create ukuele tab sheets
-To find the TAB for a chord (fig. 2.1) click on the notes (fig. 2.2) and then click the ```convert``` button.
+To find the TAB for a chord (fig. 2.1) click on the notes (fig. 2.2) and then click the ```best tab``` button.
 The corresponding tab will then be shown (fig. 2.3). A whole tab sheet can be created like that. Enter chord by chord and
-click the ```convert``` button after every chord.
+click the ```best tab``` button after every chord.
 
 ![picture2](pictures/pic2.png)
 
@@ -32,7 +32,7 @@ To save all the generated tabs to a file click the ```make tabfile``` button, an
 ![picture5](pictures/pic5.png)
 
 ## Transcribe piano cheet music to ukuele sheet music
-Click the ```select musicxml file and convert``` button. Then select a ```.musicxml```
+Click the ```select musicxml file``` button. Then select a ```.musicxml```
 or ```.mxl``` file. Then a tabfile will be generated. A ```.musicxml``` or ```.mxl``` file can be
 created by Programs like Musescore or Audiveris from a pdf file or a Pic.
 
