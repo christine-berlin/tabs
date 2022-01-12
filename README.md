@@ -43,7 +43,7 @@ and the corresponding piano note will be displayed.
   
 ![picture6](pictures/piano1.png)
 
-The corresponding piano note will be displayed.  
+The corresponding piano note will be displayed.  <br><br>
 ![picture7](pictures/piano2.png)  
 
 ## Release 
