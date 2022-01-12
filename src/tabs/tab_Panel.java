@@ -3,14 +3,8 @@ package tabs;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  n18|b18 C6
@@ -41,7 +35,7 @@ import javax.swing.JTextField;
  */
 
 
-public class MyPanel extends JPanel
+public class tab_Panel extends JPanel
 {
     static boolean[] P = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};

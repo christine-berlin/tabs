@@ -17,7 +17,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -31,45 +30,37 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
+/**
+ * Class <code>tabcreator</code> is the Main class. It creates the GUI.
+ * @author Christine Merkel
+ *
+ */
 public class tabcreator {
-    public static String fileName = "data.txt";
-    public static JFrame myframe;
+	/** */
+    public static JFrame main_frame;
     public static JPanel panel, buttonpanel, buttonpanel2;
     public static JButton buttonselectmusicXML, buttonlowG, buttonhighG ,convertbutton, clearbutton, makeTABfile, barline, showAll, tabCombinations;
     public static Point mousePT;
-    static int[] result = new int[]{-1,-1,-1,-1};
-    public static int numberofnotes;
     public static int[][] tabmatrix;
     public static boolean bar2 = false;
     public static JFileChooser filechooser;
-    public static File xmlfile;
     public static HashMap<String, Integer> hash = new HashMap<String, Integer>();
     public static HashMap<Integer, String> hash_tab = new HashMap<Integer, String>();
     public static BufferedImage imageuke, imageclef;
-    public static JTextField tf4,tf1,tf2,tf3;
+    public static JTextField tf4, tf1, tf2, tf3;
     public static JMenuBar mb;
     public static JPopupMenu pm;
     public static Boolean mbvalue = false;
-    public static JLabel l1,l2,l3,l4;
-    public static JPanel test1, test2,test3, test4;
+    public static JLabel l1, l2, l3, l4;
+    public static JPanel p1, p2, p3, p4;
 
-    //{String4, String3, String2, String1}
-    //LOW G
-    public static int[][] PSaiten = new int[][]{
+    // Ukulele Strings order: {4, 3, 2, 1}
+    public static int[][] LowG = new int[][]{
             {0,-1,-1,-1},
             {1,-1,-1,-1},
             {2,-1,-1,-1},
@@ -102,7 +93,7 @@ public class tabcreator {
             {-1,-1,-1,15},
     };
 
-    public static int[][] PSaitenHighG = new int[][]{
+    public static int[][] HighG = new int[][]{
             {-1,-1,-1,-1},
             {-1,-1,-1,-1},
             {-1,-1,-1,-1},
@@ -219,13 +210,12 @@ public class tabcreator {
     public static void save_tab()
     {
         if(!bar2)
-            appendStrToFile(fileName,
-                    hash_tab.get(MyPanel.tab[0])+hash_tab.get(MyPanel.tab[1])+hash_tab.get(MyPanel.tab[2])+hash_tab.get(MyPanel.tab[3]));
-        if(bar2) appendStrToFile(fileName, "--|----|----|----|--");
-        for(int i=0;i<MyPanel.P.length;i++)MyPanel.P[i] = false;
-        for(int j=0;j<MyPanel.tab.length;j++)MyPanel.tab[j] = -1;
-        for(int j=0;j<MyPanel.alltabs.length;j++) MyPanel.alltabs[j] = "";
-        for(int k=0;k<result.length;k++)result[k] = -1;
+            appendStrToFile("temp.txt",
+                    hash_tab.get(tab_Panel.tab[0])+hash_tab.get(tab_Panel.tab[1])+hash_tab.get(tab_Panel.tab[2])+hash_tab.get(tab_Panel.tab[3]));
+        if(bar2) appendStrToFile("temp.txt", "--|----|----|----|--");
+        for(int i=0;i<tab_Panel.P.length;i++)tab_Panel.P[i] = false;
+        for(int j=0;j<tab_Panel.tab.length;j++)tab_Panel.tab[j] = -1;
+        for(int j=0;j<tab_Panel.alltabs.length;j++) tab_Panel.alltabs[j] = "";
         set_N_S_B_false();
         bar2=false;
     }
@@ -239,8 +229,8 @@ public class tabcreator {
         for(int v=0;v<notes.size();v++)
         {
             int t= (int) notes.get(v); 
-            if(MyPanel.lowG) tabmatrix[v]=PSaiten[t];
-            if(MyPanel.highG) tabmatrix[v]=PSaitenHighG[t];
+            if(tab_Panel.lowG) tabmatrix[v]=LowG[t];
+            if(tab_Panel.highG) tabmatrix[v]=HighG[t];
         }
         
         for(int i=0;i<tabmatrix[0].length;i++)
@@ -306,7 +296,7 @@ public class tabcreator {
     	for (int i = 0; i<j.length; i++) {
     		str[i] = "";
     		if (tabmatrix[i][j[i]] < 10) str[i] += "  ";
-    		MyPanel.alltabs[j[i]] += str[i]+String.valueOf(tabmatrix[i][j[i]]) +" ";
+    		tab_Panel.alltabs[j[i]] += str[i]+String.valueOf(tabmatrix[i][j[i]]) +" ";
     	}
    
     }
@@ -315,17 +305,17 @@ public class tabcreator {
     	for(int t=0;t<4;t++) {
     		int check = t;
     		if (!IntStream.of(i).anyMatch(x -> x == check)) {
-                MyPanel.alltabs[t] += "     ";
+                tab_Panel.alltabs[t] += "     ";
     		}
         }
     }
     
     public static void initialize_notes(ArrayList notes) {
-    	numberofnotes=0;
-        for (int i=0;i<MyPanel.P.length;i++)
+    	int number_of_notes=0;
+        for (int i=0;i<tab_Panel.P.length;i++)
         {
-            if (MyPanel.P[i]==true) {
-                numberofnotes++;
+            if (tab_Panel.P[i]==true) {
+                number_of_notes++;
                 notes.add(i);
             }
         }
@@ -334,7 +324,7 @@ public class tabcreator {
     public static void find_best_tab()
     {
         ArrayList notes = new ArrayList();
-        List<MyArray> paths = new ArrayList<MyArray>();
+        List<tab_Array> paths = new ArrayList<tab_Array>();
         initialize_notes(notes);
         int tab = 0;
        
@@ -343,8 +333,8 @@ public class tabcreator {
         for(int v=0;v<notes.size();v++)
         {
             int t= (int) notes.get(v);
-            if(MyPanel.lowG) tabmatrix[v]=PSaiten[t];
-            if(MyPanel.highG) tabmatrix[v]=PSaitenHighG[t];
+            if(tab_Panel.lowG) tabmatrix[v]=LowG[t];
+            if(tab_Panel.highG) tabmatrix[v]=HighG[t];
         }
 
         if(tabmatrix.length==1) 
@@ -353,7 +343,7 @@ public class tabcreator {
             {
                 if(tabmatrix[0][j]!=-1) 
                 {
-                    MyPanel.tab[j]=tabmatrix[0][j];
+                    tab_Panel.tab[j]=tabmatrix[0][j];
                 	return;
                 }
             }
@@ -367,7 +357,7 @@ public class tabcreator {
                 {
                     if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
                     {
-                        paths.add(new MyArray(tabmatrix[0][i],tabmatrix[1][j],-1,-1));
+                        paths.add(new tab_Array(tabmatrix[0][i],tabmatrix[1][j],-1,-1));
                     }
                 }
             }
@@ -383,7 +373,7 @@ public class tabcreator {
                     {
                         if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1) && (i!=k) && (k!=j))
                         {
-                            paths.add(new MyArray(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],-1));
+                            paths.add(new tab_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],-1));
                         }
                     }
                 }
@@ -404,7 +394,7 @@ public class tabcreator {
                             {
                                 if((tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1)&& (tabmatrix[3][l]!=-1))
                                 {
-                                    paths.add(new MyArray(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],tabmatrix[3][l]));
+                                    paths.add(new tab_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],tabmatrix[3][l]));
                                 }
                             }
                         }
@@ -418,7 +408,7 @@ public class tabcreator {
         if(tab > -1) panel_text_best_tab(paths.get(tab).getItems(), tabmatrix.length);        
     }
     
-    public static int find_shortest_tab(List<MyArray> paths) {
+    public static int find_shortest_tab(List<tab_Array> paths) {
     	int delta = -1;
         int tab = -1;
         for(int i=0; i<paths.size();i++)
@@ -451,16 +441,16 @@ public class tabcreator {
         {
             for(int i=0;i<tabmatrix[0].length;i++)
             {
-                if(tabmatrix[j][i]== w[j]) MyPanel.tab[i]= w[j];
+                if(tabmatrix[j][i]== w[j]) tab_Panel.tab[i]= w[j];
             }
         }
     }
     
     public static void append_error_string() {
-    	for(int i=0;i<tabmatrix[0].length;i++) MyPanel.tab[i]= -1;
-        MyPanel.error = true;
+    	for(int i=0;i<tabmatrix[0].length;i++) tab_Panel.tab[i]= -1;
+        tab_Panel.error = true;
         String str = "--x----x----x----x--";
-        appendStrToFile("data.txt", str);
+        appendStrToFile("temp.txt", str);
     }
 
 
@@ -500,7 +490,7 @@ public class tabcreator {
                     String str2 = st.nextToken();
 
                     if(str2.compareTo("barline")==0) bar2= true;
-                    if((str2.compareTo("barline")!=0) && (hash.get(str2) != null)) MyPanel.P[hash.get(str2)] = true;
+                    if((str2.compareTo("barline")!=0) && (hash.get(str2) != null)) tab_Panel.P[hash.get(str2)] = true;
                 }
 
                 find_best_tab();
@@ -518,9 +508,9 @@ public class tabcreator {
     
     public static void set_N_S_B_false()
     {
-        for(int i=0;i<MyPanel.S.length;i++) MyPanel.S[i]=false;
-        for(int i=0;i<MyPanel.B.length;i++) MyPanel.B[i]=false;
-        for(int i=0;i<MyPanel.N.length;i++) MyPanel.N[i]=false;
+        for(int i=0;i<tab_Panel.S.length;i++) tab_Panel.S[i]=false;
+        for(int i=0;i<tab_Panel.B.length;i++) tab_Panel.B[i]=false;
+        for(int i=0;i<tab_Panel.N.length;i++) tab_Panel.N[i]=false;
     }
 
     private static void unzip(String zipFilePath, String destDir) throws IOException
@@ -565,7 +555,7 @@ public class tabcreator {
         try {
             imageuke = ImageIO.read(tabcreator.class.getResource("/resources/uke.png"));
             imageclef = ImageIO.read(tabcreator.class.getResource("/resources/clef.png"));
-            BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
+            BufferedWriter out = new BufferedWriter(new FileWriter("temp.txt"));
             out.close();
 
         }
@@ -574,15 +564,15 @@ public class tabcreator {
             System.out.println("Exception Occurred" + e);
         }
 
-        myframe = new JFrame("tabcreator");
-        myframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myframe.getContentPane().setLayout(new BoxLayout(myframe.getContentPane(),BoxLayout.Y_AXIS));
+        main_frame = new JFrame("tabcreator");
+        main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        main_frame.getContentPane().setLayout(new BoxLayout(main_frame.getContentPane(),BoxLayout.Y_AXIS));
         buttonlowG = new JButton("Low G");
         buttonhighG = new JButton("High G");
         buttonselectmusicXML = new JButton("select musicXML File");
-        panel = new MyPanel();
+        panel = new tab_Panel();
         panel.setPreferredSize(new Dimension(1000,500));
-        panel.setBackground(/*Color.DARK_GRAY*/Color.WHITE);
+        panel.setBackground(Color.WHITE);
         filechooser = new JFileChooser();
 
 
@@ -591,11 +581,11 @@ public class tabcreator {
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
-                int returnVal = filechooser.showOpenDialog(myframe);
+                int returnVal = filechooser.showOpenDialog(main_frame);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION)
                 {
-                    xmlfile = filechooser.getSelectedFile();
+                    File xmlfile = filechooser.getSelectedFile();
 
                     //if file ends with .mxl unzip fist
                     String name = xmlfile.getName();
@@ -633,9 +623,9 @@ public class tabcreator {
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
-                MyPanel.lowG=true;
-                MyPanel.highG=false;
-                MyPanel.showtab = true;
+                tab_Panel.lowG=true;
+                tab_Panel.highG=false;
+                tab_Panel.showtab = true;
                 panel.repaint();
             }
         });
@@ -645,9 +635,9 @@ public class tabcreator {
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
-                MyPanel.highG=true;
-                MyPanel.lowG=false;
-                MyPanel.showtab = true;
+                tab_Panel.highG=true;
+                tab_Panel.lowG=false;
+                tab_Panel.showtab = true;
                 panel.repaint();
             }
         });
@@ -663,7 +653,7 @@ public class tabcreator {
                     Double x = mousePT.getX();
                     Double y = mousePT.getY();
 
-                    pm.show(myframe.getContentPane(),x.intValue(), y.intValue());
+                    pm.show(main_frame.getContentPane(),x.intValue(), y.intValue());
                 }
             }
 
@@ -672,331 +662,331 @@ public class tabcreator {
                 mousePT = e.getPoint();
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>330) && (mousePT.getY()<360)){
-                    MyPanel.N[1] = !MyPanel.N[1];
-                    MyPanel.P[0] = MyPanel.N[1];
+                    tab_Panel.N[1] = !tab_Panel.N[1];
+                    tab_Panel.P[0] = tab_Panel.N[1];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>315) && (mousePT.getY()<345)){
-                    MyPanel.N[2] = !MyPanel.N[2];
-                    MyPanel.P[2] = MyPanel.N[2];
+                    tab_Panel.N[2] = !tab_Panel.N[2];
+                    tab_Panel.P[2] = tab_Panel.N[2];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>300) && (mousePT.getY()<330)){
-                    MyPanel.N[3] = !MyPanel.N[3];
-                    MyPanel.P[4] = MyPanel.N[3];
+                    tab_Panel.N[3] = !tab_Panel.N[3];
+                    tab_Panel.P[4] = tab_Panel.N[3];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>285) && (mousePT.getY()<315)){
-                    MyPanel.N[4] = !MyPanel.N[4];
-                    MyPanel.P[5] = MyPanel.N[4];
+                    tab_Panel.N[4] = !tab_Panel.N[4];
+                    tab_Panel.P[5] = tab_Panel.N[4];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>270) && (mousePT.getY()<300)) {
-                    MyPanel.N[5] = !MyPanel.N[5];
-                    MyPanel.P[7] = MyPanel.N[5];
+                    tab_Panel.N[5] = !tab_Panel.N[5];
+                    tab_Panel.P[7] = tab_Panel.N[5];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>255) && (mousePT.getY()<285)){
-                    MyPanel.N[6] = !MyPanel.N[6];
-                    MyPanel.P[9] = MyPanel.N[6];
+                    tab_Panel.N[6] = !tab_Panel.N[6];
+                    tab_Panel.P[9] = tab_Panel.N[6];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>240) && (mousePT.getY()<270)){
-                    MyPanel.N[7] = !MyPanel.N[7];
-                    MyPanel.P[10] = MyPanel.N[7];
+                    tab_Panel.N[7] = !tab_Panel.N[7];
+                    tab_Panel.P[10] = tab_Panel.N[7];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>225) && (mousePT.getY()<255)){
-                    MyPanel.N[8] = !MyPanel.N[8];
-                    MyPanel.P[12] = MyPanel.N[8];
+                    tab_Panel.N[8] = !tab_Panel.N[8];
+                    tab_Panel.P[12] = tab_Panel.N[8];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>210) && (mousePT.getY()<240)){
-                    MyPanel.N[9] = !MyPanel.N[9];
-                    MyPanel.P[14] = MyPanel.N[9];
+                    tab_Panel.N[9] = !tab_Panel.N[9];
+                    tab_Panel.P[14] = tab_Panel.N[9];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>195) && (mousePT.getY()<225)){
-                    MyPanel.N[10] = !MyPanel.N[10];
-                    MyPanel.P[16] = MyPanel.N[10];
+                    tab_Panel.N[10] = !tab_Panel.N[10];
+                    tab_Panel.P[16] = tab_Panel.N[10];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>180) && (mousePT.getY()<210)){
-                    MyPanel.N[11] = !MyPanel.N[11];
-                    MyPanel.P[17] = MyPanel.N[11];
+                    tab_Panel.N[11] = !tab_Panel.N[11];
+                    tab_Panel.P[17] = tab_Panel.N[11];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>165) && (mousePT.getY()<195)){
-                    MyPanel.N[12] = !MyPanel.N[12];
-                    MyPanel.P[19] = MyPanel.N[12];
+                    tab_Panel.N[12] = !tab_Panel.N[12];
+                    tab_Panel.P[19] = tab_Panel.N[12];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>150) && (mousePT.getY()<180)){
-                    MyPanel.N[13] = !MyPanel.N[13];
-                    MyPanel.P[21] = MyPanel.N[13];
+                    tab_Panel.N[13] = !tab_Panel.N[13];
+                    tab_Panel.P[21] = tab_Panel.N[13];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>135) && (mousePT.getY()<165)){
-                    MyPanel.N[14] = !MyPanel.N[14];
-                    MyPanel.P[22] = MyPanel.N[14];
+                    tab_Panel.N[14] = !tab_Panel.N[14];
+                    tab_Panel.P[22] = tab_Panel.N[14];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>120) && (mousePT.getY()<150)){
-                    MyPanel.N[15] = !MyPanel.N[15];
-                    MyPanel.P[24] = MyPanel.N[15];
+                    tab_Panel.N[15] = !tab_Panel.N[15];
+                    tab_Panel.P[24] = tab_Panel.N[15];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>105) && (mousePT.getY()<135)){
-                    MyPanel.N[16] = !MyPanel.N[16];
-                    MyPanel.P[26] = MyPanel.N[16];
+                    tab_Panel.N[16] = !tab_Panel.N[16];
+                    tab_Panel.P[26] = tab_Panel.N[16];
                 }
 
                 if((mousePT.getX()>60+50) &&  (mousePT.getX()<90+50) && (mousePT.getY()>90) && (mousePT.getY()<120)) {
-                    MyPanel.N[17] = !MyPanel.N[17];
-                    MyPanel.P[28] = MyPanel.N[17];
+                    tab_Panel.N[17] = !tab_Panel.N[17];
+                    tab_Panel.P[28] = tab_Panel.N[17];
                 }
 
                 if((mousePT.getX()>90+50) &&  (mousePT.getX()<120+50) && (mousePT.getY()>75) && (mousePT.getY()<105)) {
-                    MyPanel.N[18] = !MyPanel.N[18];
-                    MyPanel.P[29] = MyPanel.N[18];
+                    tab_Panel.N[18] = !tab_Panel.N[18];
+                    tab_Panel.P[29] = tab_Panel.N[18];
                 }
 
-                //# und b markieren
+                //mark # and b 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>330) && (mousePT.getY()<360)) {
-                    MyPanel.S[1] = !MyPanel.S[1];
-                    MyPanel.N[1] = MyPanel.S[1];
-                    MyPanel.P[1] = MyPanel.S[1];
+                    tab_Panel.S[1] = !tab_Panel.S[1];
+                    tab_Panel.N[1] = tab_Panel.S[1];
+                    tab_Panel.P[1] = tab_Panel.S[1];
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>300) && (mousePT.getY()<330)){
-                    MyPanel.S[3] = !MyPanel.S[3];
-                    MyPanel.N[3] = MyPanel.S[3];
-                    MyPanel.P[5] = MyPanel.S[3];
-                    MyPanel.B[3] = false;
+                    tab_Panel.S[3] = !tab_Panel.S[3];
+                    tab_Panel.N[3] = tab_Panel.S[3];
+                    tab_Panel.P[5] = tab_Panel.S[3];
+                    tab_Panel.B[3] = false;
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>270) && (mousePT.getY()<300)){
-                    MyPanel.S[5] = !MyPanel.S[5];
-                    MyPanel.N[5] = MyPanel.S[5];
-                    MyPanel.P[8] = MyPanel.S[5];
-                    MyPanel.B[5] = false;
+                    tab_Panel.S[5] = !tab_Panel.S[5];
+                    tab_Panel.N[5] = tab_Panel.S[5];
+                    tab_Panel.P[8] = tab_Panel.S[5];
+                    tab_Panel.B[5] = false;
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>240) && (mousePT.getY()<270)){
-                    MyPanel.S[7] = !MyPanel.S[7];
-                    MyPanel.N[7] = MyPanel.S[7];
-                    MyPanel.P[11] = MyPanel.S[7];
-                    MyPanel.B[7] = false;
+                    tab_Panel.S[7] = !tab_Panel.S[7];
+                    tab_Panel.N[7] = tab_Panel.S[7];
+                    tab_Panel.P[11] = tab_Panel.S[7];
+                    tab_Panel.B[7] = false;
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>210) && (mousePT.getY()<240)){
-                    MyPanel.S[9] = !MyPanel.S[9];
-                    MyPanel.N[9] = MyPanel.S[9];
-                    MyPanel.P[15] = MyPanel.S[9];
-                    MyPanel.B[9] = false;
+                    tab_Panel.S[9] = !tab_Panel.S[9];
+                    tab_Panel.N[9] = tab_Panel.S[9];
+                    tab_Panel.P[15] = tab_Panel.S[9];
+                    tab_Panel.B[9] = false;
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>180) && (mousePT.getY()<210)){
-                    MyPanel.S[11] = !MyPanel.S[11];
-                    MyPanel.N[11] = MyPanel.S[11];
-                    MyPanel.P[18] = MyPanel.S[11];
-                    MyPanel.B[11] = false;
+                    tab_Panel.S[11] = !tab_Panel.S[11];
+                    tab_Panel.N[11] = tab_Panel.S[11];
+                    tab_Panel.P[18] = tab_Panel.S[11];
+                    tab_Panel.B[11] = false;
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>150) && (mousePT.getY()<180)){
-                    MyPanel.S[13] = !MyPanel.S[13];
-                    MyPanel.N[13] = MyPanel.S[13];
-                    MyPanel.P[22] = MyPanel.S[13];
-                    MyPanel.B[13] = false;
+                    tab_Panel.S[13] = !tab_Panel.S[13];
+                    tab_Panel.N[13] = tab_Panel.S[13];
+                    tab_Panel.P[22] = tab_Panel.S[13];
+                    tab_Panel.B[13] = false;
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>120) && (mousePT.getY()<150)){
-                    MyPanel.S[15] = !MyPanel.S[15];
-                    MyPanel.N[15] = MyPanel.S[15];
-                    MyPanel.P[25] = MyPanel.S[15];
-                    MyPanel.B[15] = false;
+                    tab_Panel.S[15] = !tab_Panel.S[15];
+                    tab_Panel.N[15] = tab_Panel.S[15];
+                    tab_Panel.P[25] = tab_Panel.S[15];
+                    tab_Panel.B[15] = false;
                 }
 
                 if((mousePT.getX()>35+50) &&  (mousePT.getX()<65+50) && (mousePT.getY()>90) && (mousePT.getY()<120)){
-                    MyPanel.S[17] = !MyPanel.S[17];
-                    MyPanel.N[17]= MyPanel.S[17];
-                    MyPanel.P[29] = MyPanel.S[17];
-                    MyPanel.B[17] = false;
+                    tab_Panel.S[17] = !tab_Panel.S[17];
+                    tab_Panel.N[17]= tab_Panel.S[17];
+                    tab_Panel.P[29] = tab_Panel.S[17];
+                    tab_Panel.B[17] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>315) && (mousePT.getY()<345)){
-                    MyPanel.S[2] = !MyPanel.S[2];
-                    MyPanel.N[2] = MyPanel.S[2];
-                    MyPanel.P[3] = MyPanel.S[2];
-                    MyPanel.B[2] = false;
+                    tab_Panel.S[2] = !tab_Panel.S[2];
+                    tab_Panel.N[2] = tab_Panel.S[2];
+                    tab_Panel.P[3] = tab_Panel.S[2];
+                    tab_Panel.B[2] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>285) && (mousePT.getY()<315)){
-                    MyPanel.S[4] = !MyPanel.S[4];
-                    MyPanel.N[4] = MyPanel.S[4];
-                    MyPanel.P[6] = MyPanel.S[4];
-                    MyPanel.B[4] = false;
+                    tab_Panel.S[4] = !tab_Panel.S[4];
+                    tab_Panel.N[4] = tab_Panel.S[4];
+                    tab_Panel.P[6] = tab_Panel.S[4];
+                    tab_Panel.B[4] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>255) && (mousePT.getY()<285)){
-                    MyPanel.S[6] = !MyPanel.S[6];
-                    MyPanel.N[6] = MyPanel.S[6];
-                    MyPanel.P[10] = MyPanel.S[6];
-                    MyPanel.B[6] = false;
+                    tab_Panel.S[6] = !tab_Panel.S[6];
+                    tab_Panel.N[6] = tab_Panel.S[6];
+                    tab_Panel.P[10] = tab_Panel.S[6];
+                    tab_Panel.B[6] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>225) && (mousePT.getY()<255)){
-                    MyPanel.S[8] = !MyPanel.S[8];
-                    MyPanel.N[8] = MyPanel.S[8];
-                    MyPanel.P[13] = MyPanel.S[8];
-                    MyPanel.B[8] = false;
+                    tab_Panel.S[8] = !tab_Panel.S[8];
+                    tab_Panel.N[8] = tab_Panel.S[8];
+                    tab_Panel.P[13] = tab_Panel.S[8];
+                    tab_Panel.B[8] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>185) && (mousePT.getY()<225)){
-                    MyPanel.S[10] = !MyPanel.S[10];
-                    MyPanel.N[10] = MyPanel.S[10];
-                    MyPanel.P[17]= MyPanel.S[10];
-                    MyPanel.B[10] = false;
+                    tab_Panel.S[10] = !tab_Panel.S[10];
+                    tab_Panel.N[10] = tab_Panel.S[10];
+                    tab_Panel.P[17]= tab_Panel.S[10];
+                    tab_Panel.B[10] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>155) && (mousePT.getY()<185)){
-                    MyPanel.S[12] = !MyPanel.S[12];
-                    MyPanel.N[12] = MyPanel.S[12];
-                    MyPanel.P[20] = MyPanel.S[12];
-                    MyPanel.B[12] = false;
+                    tab_Panel.S[12] = !tab_Panel.S[12];
+                    tab_Panel.N[12] = tab_Panel.S[12];
+                    tab_Panel.P[20] = tab_Panel.S[12];
+                    tab_Panel.B[12] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>125) && (mousePT.getY()<155)){
-                    MyPanel.S[14] = !MyPanel.S[14];
-                    MyPanel.N[14] = MyPanel.S[14];
-                    MyPanel.P[23] =MyPanel.S[14];
-                    MyPanel.B[14] = false;
+                    tab_Panel.S[14] = !tab_Panel.S[14];
+                    tab_Panel.N[14] = tab_Panel.S[14];
+                    tab_Panel.P[23] =tab_Panel.S[14];
+                    tab_Panel.B[14] = false;
                 }
 
                 if((mousePT.getX()>115+50) &&  (mousePT.getX()<145+50) && (mousePT.getY()>95) && (mousePT.getY()<125)){
-                    MyPanel.S[16] = !MyPanel.S[16];
-                    MyPanel.N[16] = MyPanel.S[16];
-                    MyPanel.P[27] = MyPanel.S[16];
-                    MyPanel.B[16] = false;
+                    tab_Panel.S[16] = !tab_Panel.S[16];
+                    tab_Panel.N[16] = tab_Panel.S[16];
+                    tab_Panel.P[27] = tab_Panel.S[16];
+                    tab_Panel.B[16] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>300) && (mousePT.getY()<330)){
-                    MyPanel.B[3] = !MyPanel.B[3];
-                    MyPanel.N[3] = MyPanel.B[3];
-                    MyPanel.P[3] = MyPanel.B[3];
-                    MyPanel.S[3] = false;
+                    tab_Panel.B[3] = !tab_Panel.B[3];
+                    tab_Panel.N[3] = tab_Panel.B[3];
+                    tab_Panel.P[3] = tab_Panel.B[3];
+                    tab_Panel.S[3] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>270) && (mousePT.getY()<300)){
-                    MyPanel.B[5] = !MyPanel.B[5];
-                    MyPanel.N[5] = MyPanel.B[5];
-                    MyPanel.P[6] = MyPanel.B[5];
-                    MyPanel.S[5] = false;
+                    tab_Panel.B[5] = !tab_Panel.B[5];
+                    tab_Panel.N[5] = tab_Panel.B[5];
+                    tab_Panel.P[6] = tab_Panel.B[5];
+                    tab_Panel.S[5] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>240) && (mousePT.getY()<270)){
-                    MyPanel.B[7] = !MyPanel.B[7];
-                    MyPanel.N[7] = MyPanel.B[7];
-                    MyPanel.P[9] = MyPanel.B[7];
-                    MyPanel.S[7] = false;
+                    tab_Panel.B[7] = !tab_Panel.B[7];
+                    tab_Panel.N[7] = tab_Panel.B[7];
+                    tab_Panel.P[9] = tab_Panel.B[7];
+                    tab_Panel.S[7] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>210) && (mousePT.getY()<240)){
-                    MyPanel.B[9] = !MyPanel.B[9];
-                    MyPanel.N[9] = MyPanel.B[9];
-                    MyPanel.P[13] = MyPanel.B[9];
-                    MyPanel.S[9] = false;
+                    tab_Panel.B[9] = !tab_Panel.B[9];
+                    tab_Panel.N[9] = tab_Panel.B[9];
+                    tab_Panel.P[13] = tab_Panel.B[9];
+                    tab_Panel.S[9] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>180) && (mousePT.getY()<210)){
-                    MyPanel.B[11] = !MyPanel.B[11];
-                    MyPanel.N[11] = MyPanel.B[11];
-                    MyPanel.P[16] = MyPanel.B[11];
-                    MyPanel.S[11] = false;
+                    tab_Panel.B[11] = !tab_Panel.B[11];
+                    tab_Panel.N[11] = tab_Panel.B[11];
+                    tab_Panel.P[16] = tab_Panel.B[11];
+                    tab_Panel.S[11] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>150) && (mousePT.getY()<180)){
-                    MyPanel.B[13] = !MyPanel.B[13];
-                    MyPanel.N[13] = MyPanel.B[13];
-                    MyPanel.P[20] = MyPanel.B[13];
-                    MyPanel.S[13] = false;
+                    tab_Panel.B[13] = !tab_Panel.B[13];
+                    tab_Panel.N[13] = tab_Panel.B[13];
+                    tab_Panel.P[20] = tab_Panel.B[13];
+                    tab_Panel.S[13] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>120) && (mousePT.getY()<150)){
-                    MyPanel.B[15] = !MyPanel.B[15];
-                    MyPanel.N[15] = MyPanel.B[15];
-                    MyPanel.P[23] = MyPanel.B[15];
-                    MyPanel.S[15] = false;
+                    tab_Panel.B[15] = !tab_Panel.B[15];
+                    tab_Panel.N[15] = tab_Panel.B[15];
+                    tab_Panel.P[23] = tab_Panel.B[15];
+                    tab_Panel.S[15] = false;
                 }
 
                 if((mousePT.getX()>10+50) &&  (mousePT.getX()<30+50) && (mousePT.getY()>90) && (mousePT.getY()<120)){
-                    MyPanel.B[17] = !MyPanel.B[17];
-                    MyPanel.N[17] = MyPanel.B[17];
-                    MyPanel.P[27] = MyPanel.B[17];
-                    MyPanel.S[17] = false;
+                    tab_Panel.B[17] = !tab_Panel.B[17];
+                    tab_Panel.N[17] = tab_Panel.B[17];
+                    tab_Panel.P[27] = tab_Panel.B[17];
+                    tab_Panel.S[17] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>315) && (mousePT.getY()<345)){
-                    MyPanel.B[2] = !MyPanel.B[2];
-                    MyPanel.N[2] = MyPanel.B[2];
-                    MyPanel.P[1] = MyPanel.B[2];
-                    MyPanel.S[2] = false;
+                    tab_Panel.B[2] = !tab_Panel.B[2];
+                    tab_Panel.N[2] = tab_Panel.B[2];
+                    tab_Panel.P[1] = tab_Panel.B[2];
+                    tab_Panel.S[2] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>285) && (mousePT.getY()<315)){
-                    MyPanel.B[4] = !MyPanel.B[4];
-                    MyPanel.N[4] = MyPanel.B[4];
-                    MyPanel.P[4] = MyPanel.B[4];
-                    MyPanel.S[4] = false;
+                    tab_Panel.B[4] = !tab_Panel.B[4];
+                    tab_Panel.N[4] = tab_Panel.B[4];
+                    tab_Panel.P[4] = tab_Panel.B[4];
+                    tab_Panel.S[4] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>255) && (mousePT.getY()<285)){
-                    MyPanel.B[6] = !MyPanel.B[6];
-                    MyPanel.N[6] = MyPanel.B[6];
-                    MyPanel.P[8] = MyPanel.B[6];
-                    MyPanel.S[6] = false;
+                    tab_Panel.B[6] = !tab_Panel.B[6];
+                    tab_Panel.N[6] = tab_Panel.B[6];
+                    tab_Panel.P[8] = tab_Panel.B[6];
+                    tab_Panel.S[6] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>225) && (mousePT.getY()<255)){
-                    MyPanel.B[8] = !MyPanel.B[8];
-                    MyPanel.N[8] = MyPanel.B[8];
-                    MyPanel.P[15] = MyPanel.B[8];
-                    MyPanel.S[8] = false;
+                    tab_Panel.B[8] = !tab_Panel.B[8];
+                    tab_Panel.N[8] = tab_Panel.B[8];
+                    tab_Panel.P[15] = tab_Panel.B[8];
+                    tab_Panel.S[8] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>185) && (mousePT.getY()<225))
                 {
-                    MyPanel.B[10] = !MyPanel.B[10];
-                    MyPanel.N[10] = MyPanel.B[10];
-                    MyPanel.P[15] = MyPanel.B[10];
-                    MyPanel.S[10] = false;
+                    tab_Panel.B[10] = !tab_Panel.B[10];
+                    tab_Panel.N[10] = tab_Panel.B[10];
+                    tab_Panel.P[15] = tab_Panel.B[10];
+                    tab_Panel.S[10] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>155) && (mousePT.getY()<185)){
-                    MyPanel.B[12] = !MyPanel.B[12];
-                    MyPanel.N[12] = MyPanel.B[12];
-                    MyPanel.P[18] = MyPanel.B[12];
-                    MyPanel.S[12] = false;
+                    tab_Panel.B[12] = !tab_Panel.B[12];
+                    tab_Panel.N[12] = tab_Panel.B[12];
+                    tab_Panel.P[18] = tab_Panel.B[12];
+                    tab_Panel.S[12] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>125) && (mousePT.getY()<155)){
-                    MyPanel.B[14] = !MyPanel.B[14];
-                    MyPanel.N[14] = MyPanel.B[14];
-                    MyPanel.P[21] = MyPanel.B[14];
-                    MyPanel.S[14] = false;
+                    tab_Panel.B[14] = !tab_Panel.B[14];
+                    tab_Panel.N[14] = tab_Panel.B[14];
+                    tab_Panel.P[21] = tab_Panel.B[14];
+                    tab_Panel.S[14] = false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>95) && (mousePT.getY()<125)){
-                    MyPanel.B[16] = !MyPanel.B[16];
-                    MyPanel.N[16] = MyPanel.B[16];
-                    MyPanel.P[25] =MyPanel.B[16];
-                    MyPanel.S[16]= false;
+                    tab_Panel.B[16] = !tab_Panel.B[16];
+                    tab_Panel.N[16] = tab_Panel.B[16];
+                    tab_Panel.P[25] =tab_Panel.B[16];
+                    tab_Panel.S[16]= false;
                 }
 
                 if((mousePT.getX()>145+50) &&  (mousePT.getX()<175+50) && (mousePT.getY()>65) && (mousePT.getY()<95)){
-                    MyPanel.B[18] = !MyPanel.B[18];
-                    MyPanel.N[18] = MyPanel.B[18];
-                    MyPanel.P[28] = MyPanel.B[18];
+                    tab_Panel.B[18] = !tab_Panel.B[18];
+                    tab_Panel.N[18] = tab_Panel.B[18];
+                    tab_Panel.P[28] = tab_Panel.B[18];
                 }
 
                 panel.repaint();
@@ -1016,179 +1006,179 @@ public class tabcreator {
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
-                if(MyPanel.lowG) {
+                if(tab_Panel.lowG) {
                     if (tf1.getText().matches(".*\\d.*")){
                         int tab1 = Integer.parseInt(tf1.getText().trim());
                         switch (tab1) {
-                            case 0: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= false; MyPanel.P[14] = true; break;
-                            case 1: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= true; MyPanel.P[15] = true; break;
-                            case 2: MyPanel.N[10] = true; MyPanel.B[10] = false; MyPanel.S[10]= false; MyPanel.P[16] = true; break;
-                            case 3: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= false; MyPanel.P[17] = true; break;
-                            case 4: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= true; MyPanel.P[18] = true; break;
-                            case 5: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= false; MyPanel.P[19] = true; break;
-                            case 6: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= true; MyPanel.P[20] = true; break;
-                            case 7: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[13]= false; MyPanel.P[21] = true; break;
-                            case 8: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14]= false; MyPanel.P[22] = true; break;
-                            case 9: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14]= true; MyPanel.P[23] = true; break;
-                            case 10: MyPanel.N[15] = true; MyPanel.B[15] = false; MyPanel.S[15]= false; MyPanel.P[24] = true; break;
-                            case 11: MyPanel.N[15] = true; MyPanel.B[15] = false; MyPanel.S[15]= true; MyPanel.P[25] = true; break;
-                            case 12: MyPanel.N[16] = true; MyPanel.B[16] = false; MyPanel.S[16]= false; MyPanel.P[26] = true; break;
-                            case 13: MyPanel.N[16] = true; MyPanel.B[16] = false; MyPanel.S[16]= true; MyPanel.P[27] = true; break;
-                            case 14: MyPanel.N[17] = true; MyPanel.B[17] = false; MyPanel.S[17] = false; MyPanel.P[28] = true; break;
-                            case 15: MyPanel.N[18] = true; MyPanel.B[18] = false; break;
+                            case 0: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= false; tab_Panel.P[14] = true; break;
+                            case 1: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= true; tab_Panel.P[15] = true; break;
+                            case 2: tab_Panel.N[10] = true; tab_Panel.B[10] = false; tab_Panel.S[10]= false; tab_Panel.P[16] = true; break;
+                            case 3: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= false; tab_Panel.P[17] = true; break;
+                            case 4: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= true; tab_Panel.P[18] = true; break;
+                            case 5: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= false; tab_Panel.P[19] = true; break;
+                            case 6: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= true; tab_Panel.P[20] = true; break;
+                            case 7: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[13]= false; tab_Panel.P[21] = true; break;
+                            case 8: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14]= false; tab_Panel.P[22] = true; break;
+                            case 9: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14]= true; tab_Panel.P[23] = true; break;
+                            case 10: tab_Panel.N[15] = true; tab_Panel.B[15] = false; tab_Panel.S[15]= false; tab_Panel.P[24] = true; break;
+                            case 11: tab_Panel.N[15] = true; tab_Panel.B[15] = false; tab_Panel.S[15]= true; tab_Panel.P[25] = true; break;
+                            case 12: tab_Panel.N[16] = true; tab_Panel.B[16] = false; tab_Panel.S[16]= false; tab_Panel.P[26] = true; break;
+                            case 13: tab_Panel.N[16] = true; tab_Panel.B[16] = false; tab_Panel.S[16]= true; tab_Panel.P[27] = true; break;
+                            case 14: tab_Panel.N[17] = true; tab_Panel.B[17] = false; tab_Panel.S[17] = false; tab_Panel.P[28] = true; break;
+                            case 15: tab_Panel.N[18] = true; tab_Panel.B[18] = false; break;
                         }
                     }
 
                     if(tf2.getText().matches(".*\\d.*")) {
                         int tab2 = Integer.parseInt(tf2.getText().trim());
                         switch (tab2) {
-                            case 0: MyPanel.N[6] = true; MyPanel.B[6] = false; MyPanel.S[6]= false; MyPanel.P[9] = true; break;
-                            case 1: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= false; MyPanel.P[10] = true; break;
-                            case 2: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= true; MyPanel.P[11] = true; break;
-                            case 3: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= false; MyPanel.P[12] = true; break;
-                            case 4: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= true; MyPanel.P[13] = true; break;
-                            case 5: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= false; MyPanel.P[14] = true; break;
-                            case 6: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= true; MyPanel.P[15] = true; break;
-                            case 7: MyPanel.N[10] = true; MyPanel.B[10] = false; MyPanel.S[10]= false; MyPanel.P[16] = true; break;
-                            case 8: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= false; MyPanel.P[17] = true; break;
-                            case 9: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= true; MyPanel.P[18] = true; break;
-                            case 10: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= false; MyPanel.P[19] = true; break;
-                            case 11: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= true; MyPanel.P[20] = true; break;
-                            case 12: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[13]= false; MyPanel.P[21] = true; break;
-                            case 13: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14]= false; MyPanel.P[22] = true; break;
-                            case 14: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14] = true; MyPanel.P[23] = true; break;
-                            case 15: MyPanel.N[15] = true; MyPanel.B[15] = false; MyPanel.S[15] = false; MyPanel.P[24] = true; break;
+                            case 0: tab_Panel.N[6] = true; tab_Panel.B[6] = false; tab_Panel.S[6]= false; tab_Panel.P[9] = true; break;
+                            case 1: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= false; tab_Panel.P[10] = true; break;
+                            case 2: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= true; tab_Panel.P[11] = true; break;
+                            case 3: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= false; tab_Panel.P[12] = true; break;
+                            case 4: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= true; tab_Panel.P[13] = true; break;
+                            case 5: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= false; tab_Panel.P[14] = true; break;
+                            case 6: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= true; tab_Panel.P[15] = true; break;
+                            case 7: tab_Panel.N[10] = true; tab_Panel.B[10] = false; tab_Panel.S[10]= false; tab_Panel.P[16] = true; break;
+                            case 8: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= false; tab_Panel.P[17] = true; break;
+                            case 9: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= true; tab_Panel.P[18] = true; break;
+                            case 10: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= false; tab_Panel.P[19] = true; break;
+                            case 11: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= true; tab_Panel.P[20] = true; break;
+                            case 12: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[13]= false; tab_Panel.P[21] = true; break;
+                            case 13: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14]= false; tab_Panel.P[22] = true; break;
+                            case 14: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14] = true; tab_Panel.P[23] = true; break;
+                            case 15: tab_Panel.N[15] = true; tab_Panel.B[15] = false; tab_Panel.S[15] = false; tab_Panel.P[24] = true; break;
                         }
                     }
 
                     if(tf3.getText().matches(".*\\d.*")){
                         int tab3 = Integer.parseInt(tf3.getText().trim());
                         switch (tab3) {
-                            case 0: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= false; MyPanel.P[5] = true; break;
-                            case 1: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= true; MyPanel.P[6] = true; break;
-                            case 2: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= false; MyPanel.P[7] = true; break;
-                            case 3: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= true; MyPanel.P[8] = true; break;
-                            case 4: MyPanel.N[6] = true; MyPanel.B[6] = false; MyPanel.S[6]= false; MyPanel.P[9] = true; break;
-                            case 5: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= false; MyPanel.P[10] = true; break;
-                            case 6: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= true; MyPanel.P[11] = true; break;
-                            case 7: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= false; MyPanel.P[12] = true; break;
-                            case 8: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= true; MyPanel.P[13] = true; break;
-                            case 9: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= false; MyPanel.P[14] = true; break;
-                            case 10: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= true; MyPanel.P[15] = true; break;
-                            case 11: MyPanel.N[10] = true; MyPanel.B[10] = false; MyPanel.S[10]= false; MyPanel.P[16] = true; break;
-                            case 12: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= false; MyPanel.P[17] = true; break;
-                            case 13: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= true; MyPanel.P[18] = true; break;
-                            case 14: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12] = false; MyPanel.P[19] = true; break;
-                            case 15: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12] = true; MyPanel.P[20] = true; break;
-                            case 16: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[12] = false; MyPanel.P[21] = true; break;
-                            case 17: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[13] = true; MyPanel.P[22] = true; break;
+                            case 0: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= false; tab_Panel.P[5] = true; break;
+                            case 1: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= true; tab_Panel.P[6] = true; break;
+                            case 2: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= false; tab_Panel.P[7] = true; break;
+                            case 3: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= true; tab_Panel.P[8] = true; break;
+                            case 4: tab_Panel.N[6] = true; tab_Panel.B[6] = false; tab_Panel.S[6]= false; tab_Panel.P[9] = true; break;
+                            case 5: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= false; tab_Panel.P[10] = true; break;
+                            case 6: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= true; tab_Panel.P[11] = true; break;
+                            case 7: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= false; tab_Panel.P[12] = true; break;
+                            case 8: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= true; tab_Panel.P[13] = true; break;
+                            case 9: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= false; tab_Panel.P[14] = true; break;
+                            case 10: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= true; tab_Panel.P[15] = true; break;
+                            case 11: tab_Panel.N[10] = true; tab_Panel.B[10] = false; tab_Panel.S[10]= false; tab_Panel.P[16] = true; break;
+                            case 12: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= false; tab_Panel.P[17] = true; break;
+                            case 13: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= true; tab_Panel.P[18] = true; break;
+                            case 14: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12] = false; tab_Panel.P[19] = true; break;
+                            case 15: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12] = true; tab_Panel.P[20] = true; break;
+                            case 16: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[12] = false; tab_Panel.P[21] = true; break;
+                            case 17: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[13] = true; tab_Panel.P[22] = true; break;
                         }
                     }
 
                     if(tf4.getText().matches(".*\\d.*")){
                         int tab4 = Integer.parseInt(tf4.getText().trim());
                         switch (tab4) {
-                            case 0: MyPanel.N[1] = true;  MyPanel.S[1]= false; MyPanel.P[0] = true; break;
-                            case 1: MyPanel.N[1] = true;  MyPanel.S[1]= true; MyPanel.P[1] = true; break;
-                            case 2: MyPanel.N[2] = true; MyPanel.B[2] = false; MyPanel.S[2]= false; MyPanel.P[2] = true; break;
-                            case 3: MyPanel.N[2] = true; MyPanel.B[2] = false; MyPanel.S[2]= true; MyPanel.P[3] = true; break;
-                            case 4: MyPanel.N[3] = true; MyPanel.B[3] = false; MyPanel.S[3]= false; MyPanel.P[4] = true; break;
-                            case 5: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= false; MyPanel.P[5] = true; break;
-                            case 6: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= true; MyPanel.P[6] = true; break;
-                            case 7: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= false; MyPanel.P[7] = true; break;
-                            case 8: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= true; MyPanel.P[8] = true; break;
-                            case 9: MyPanel.N[6] = true; MyPanel.B[6] = false; MyPanel.S[6]= false; MyPanel.P[9] = true; break;
-                            case 10: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= false; MyPanel.P[10] = true; break;
-                            case 11: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= true; MyPanel.P[11] = true; break;
-                            case 12: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= false; MyPanel.P[12] = true; break;
+                            case 0: tab_Panel.N[1] = true;  tab_Panel.S[1]= false; tab_Panel.P[0] = true; break;
+                            case 1: tab_Panel.N[1] = true;  tab_Panel.S[1]= true; tab_Panel.P[1] = true; break;
+                            case 2: tab_Panel.N[2] = true; tab_Panel.B[2] = false; tab_Panel.S[2]= false; tab_Panel.P[2] = true; break;
+                            case 3: tab_Panel.N[2] = true; tab_Panel.B[2] = false; tab_Panel.S[2]= true; tab_Panel.P[3] = true; break;
+                            case 4: tab_Panel.N[3] = true; tab_Panel.B[3] = false; tab_Panel.S[3]= false; tab_Panel.P[4] = true; break;
+                            case 5: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= false; tab_Panel.P[5] = true; break;
+                            case 6: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= true; tab_Panel.P[6] = true; break;
+                            case 7: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= false; tab_Panel.P[7] = true; break;
+                            case 8: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= true; tab_Panel.P[8] = true; break;
+                            case 9: tab_Panel.N[6] = true; tab_Panel.B[6] = false; tab_Panel.S[6]= false; tab_Panel.P[9] = true; break;
+                            case 10: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= false; tab_Panel.P[10] = true; break;
+                            case 11: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= true; tab_Panel.P[11] = true; break;
+                            case 12: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= false; tab_Panel.P[12] = true; break;
                         }
                     }
                 }
 
-                if(MyPanel.highG) {
+                if(tab_Panel.highG) {
                     if (tf1.getText().matches(".*\\d.*")){
                         int tab1 = Integer.parseInt(tf1.getText().trim());
                         switch (tab1) {
-                            case 0: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= false; MyPanel.P[14] = true; break;
-                            case 1: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= true; MyPanel.P[15] = true; break;
-                            case 2: MyPanel.N[10] = true; MyPanel.B[10] = false; MyPanel.S[10]= false; MyPanel.P[16] = true; break;
-                            case 3: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= false; MyPanel.P[17] = true; break;
-                            case 4: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= true; MyPanel.P[18] = true; break;
-                            case 5: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= false; MyPanel.P[19] = true; break;
-                            case 6: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= true; MyPanel.P[20] = true; break;
-                            case 7: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[13]= false; MyPanel.P[21] = true; break;
-                            case 8: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14]= false; MyPanel.P[22] = true; break;
-                            case 9: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14]= true; MyPanel.P[23] = true; break;
-                            case 10: MyPanel.N[15] = true; MyPanel.B[15] = false; MyPanel.S[15]= false; MyPanel.P[24] = true; break;
-                            case 11: MyPanel.N[15] = true; MyPanel.B[15] = false; MyPanel.S[15]= true; MyPanel.P[25] = true; break;
-                            case 12: MyPanel.N[16] = true; MyPanel.B[16] = false; MyPanel.S[16]= false; MyPanel.P[26] = true; break;
-                            case 13: MyPanel.N[16] = true; MyPanel.B[16] = false; MyPanel.S[16]= true; MyPanel.P[27] = true; break;
-                            case 14: MyPanel.N[17] = true; MyPanel.B[17] = false; MyPanel.S[17] = false; MyPanel.P[28] = true; break;
-                            case 15: MyPanel.N[18] = true; MyPanel.B[18] = false; break;
+                            case 0: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= false; tab_Panel.P[14] = true; break;
+                            case 1: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= true; tab_Panel.P[15] = true; break;
+                            case 2: tab_Panel.N[10] = true; tab_Panel.B[10] = false; tab_Panel.S[10]= false; tab_Panel.P[16] = true; break;
+                            case 3: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= false; tab_Panel.P[17] = true; break;
+                            case 4: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= true; tab_Panel.P[18] = true; break;
+                            case 5: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= false; tab_Panel.P[19] = true; break;
+                            case 6: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= true; tab_Panel.P[20] = true; break;
+                            case 7: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[13]= false; tab_Panel.P[21] = true; break;
+                            case 8: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14]= false; tab_Panel.P[22] = true; break;
+                            case 9: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14]= true; tab_Panel.P[23] = true; break;
+                            case 10: tab_Panel.N[15] = true; tab_Panel.B[15] = false; tab_Panel.S[15]= false; tab_Panel.P[24] = true; break;
+                            case 11: tab_Panel.N[15] = true; tab_Panel.B[15] = false; tab_Panel.S[15]= true; tab_Panel.P[25] = true; break;
+                            case 12: tab_Panel.N[16] = true; tab_Panel.B[16] = false; tab_Panel.S[16]= false; tab_Panel.P[26] = true; break;
+                            case 13: tab_Panel.N[16] = true; tab_Panel.B[16] = false; tab_Panel.S[16]= true; tab_Panel.P[27] = true; break;
+                            case 14: tab_Panel.N[17] = true; tab_Panel.B[17] = false; tab_Panel.S[17] = false; tab_Panel.P[28] = true; break;
+                            case 15: tab_Panel.N[18] = true; tab_Panel.B[18] = false; break;
                         }
                     }
 
                     if(tf2.getText().matches(".*\\d.*")) {
                         int tab2 = Integer.parseInt(tf2.getText().trim());
                         switch (tab2) {
-                            case 0: MyPanel.N[6] = true; MyPanel.B[6] = false; MyPanel.S[6]= false; MyPanel.P[9] = true; break;
-                            case 1: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= false; MyPanel.P[10] = true; break;
-                            case 2: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= true; MyPanel.P[11] = true; break;
-                            case 3: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= false; MyPanel.P[12] = true; break;
-                            case 4: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= true; MyPanel.P[13] = true; break;
-                            case 5: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= false; MyPanel.P[14] = true; break;
-                            case 6: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= true; MyPanel.P[15] = true; break;
-                            case 7: MyPanel.N[10] = true; MyPanel.B[10] = false; MyPanel.S[10]= false; MyPanel.P[16] = true; break;
-                            case 8: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= false; MyPanel.P[17] = true; break;
-                            case 9: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= true; MyPanel.P[18] = true; break;
-                            case 10: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= false; MyPanel.P[19] = true; break;
-                            case 11: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12]= true; MyPanel.P[20] = true; break;
-                            case 12: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[13]= false; MyPanel.P[21] = true; break;
-                            case 13: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14]= false; MyPanel.P[22] = true; break;
-                            case 14: MyPanel.N[14] = true; MyPanel.B[14] = false; MyPanel.S[14] = true; MyPanel.P[23] = true; break;
-                            case 15: MyPanel.N[15] = true; MyPanel.B[15] = false; MyPanel.S[15] = false; MyPanel.P[24] = true; break;
+                            case 0: tab_Panel.N[6] = true; tab_Panel.B[6] = false; tab_Panel.S[6]= false; tab_Panel.P[9] = true; break;
+                            case 1: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= false; tab_Panel.P[10] = true; break;
+                            case 2: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= true; tab_Panel.P[11] = true; break;
+                            case 3: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= false; tab_Panel.P[12] = true; break;
+                            case 4: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= true; tab_Panel.P[13] = true; break;
+                            case 5: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= false; tab_Panel.P[14] = true; break;
+                            case 6: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= true; tab_Panel.P[15] = true; break;
+                            case 7: tab_Panel.N[10] = true; tab_Panel.B[10] = false; tab_Panel.S[10]= false; tab_Panel.P[16] = true; break;
+                            case 8: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= false; tab_Panel.P[17] = true; break;
+                            case 9: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= true; tab_Panel.P[18] = true; break;
+                            case 10: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= false; tab_Panel.P[19] = true; break;
+                            case 11: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12]= true; tab_Panel.P[20] = true; break;
+                            case 12: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[13]= false; tab_Panel.P[21] = true; break;
+                            case 13: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14]= false; tab_Panel.P[22] = true; break;
+                            case 14: tab_Panel.N[14] = true; tab_Panel.B[14] = false; tab_Panel.S[14] = true; tab_Panel.P[23] = true; break;
+                            case 15: tab_Panel.N[15] = true; tab_Panel.B[15] = false; tab_Panel.S[15] = false; tab_Panel.P[24] = true; break;
                         }
                     }
 
                     if(tf3.getText().matches(".*\\d.*")){
                         int tab3 = Integer.parseInt(tf3.getText().trim());
                         switch (tab3) {
-                            case 0: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= false; MyPanel.P[5] = true; break;
-                            case 1: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= true; MyPanel.P[6] = true; break;
-                            case 2: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= false; MyPanel.P[7] = true; break;
-                            case 3: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= true; MyPanel.P[8] = true; break;
-                            case 4: MyPanel.N[6] = true; MyPanel.B[6] = false; MyPanel.S[6]= false; MyPanel.P[9] = true; break;
-                            case 5: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= false; MyPanel.P[10] = true; break;
-                            case 6: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= true; MyPanel.P[11] = true; break;
-                            case 7: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= false; MyPanel.P[12] = true; break;
-                            case 8: MyPanel.N[8] = true; MyPanel.B[8] = false; MyPanel.S[8]= true; MyPanel.P[13] = true; break;
-                            case 9: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= false; MyPanel.P[14] = true; break;
-                            case 10: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= true; MyPanel.P[15] = true; break;
-                            case 11: MyPanel.N[10] = true; MyPanel.B[10] = false; MyPanel.S[10]= false; MyPanel.P[16] = true; break;
-                            case 12: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= false; MyPanel.P[17] = true; break;
-                            case 13: MyPanel.N[11] = true; MyPanel.B[11] = false; MyPanel.S[11]= true; MyPanel.P[18] = true; break;
-                            case 14: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12] = false; MyPanel.P[19] = true; break;
-                            case 15: MyPanel.N[12] = true; MyPanel.B[12] = false; MyPanel.S[12] = true; MyPanel.P[20] = true; break;
-                            case 16: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[12] = false; MyPanel.P[21] = true; break;
-                            case 17: MyPanel.N[13] = true; MyPanel.B[13] = false; MyPanel.S[13] = true; MyPanel.P[22] = true; break;
+                            case 0: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= false; tab_Panel.P[5] = true; break;
+                            case 1: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= true; tab_Panel.P[6] = true; break;
+                            case 2: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= false; tab_Panel.P[7] = true; break;
+                            case 3: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= true; tab_Panel.P[8] = true; break;
+                            case 4: tab_Panel.N[6] = true; tab_Panel.B[6] = false; tab_Panel.S[6]= false; tab_Panel.P[9] = true; break;
+                            case 5: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= false; tab_Panel.P[10] = true; break;
+                            case 6: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= true; tab_Panel.P[11] = true; break;
+                            case 7: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= false; tab_Panel.P[12] = true; break;
+                            case 8: tab_Panel.N[8] = true; tab_Panel.B[8] = false; tab_Panel.S[8]= true; tab_Panel.P[13] = true; break;
+                            case 9: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= false; tab_Panel.P[14] = true; break;
+                            case 10: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= true; tab_Panel.P[15] = true; break;
+                            case 11: tab_Panel.N[10] = true; tab_Panel.B[10] = false; tab_Panel.S[10]= false; tab_Panel.P[16] = true; break;
+                            case 12: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= false; tab_Panel.P[17] = true; break;
+                            case 13: tab_Panel.N[11] = true; tab_Panel.B[11] = false; tab_Panel.S[11]= true; tab_Panel.P[18] = true; break;
+                            case 14: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12] = false; tab_Panel.P[19] = true; break;
+                            case 15: tab_Panel.N[12] = true; tab_Panel.B[12] = false; tab_Panel.S[12] = true; tab_Panel.P[20] = true; break;
+                            case 16: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[12] = false; tab_Panel.P[21] = true; break;
+                            case 17: tab_Panel.N[13] = true; tab_Panel.B[13] = false; tab_Panel.S[13] = true; tab_Panel.P[22] = true; break;
                         }
                     }
 
                     if(tf4.getText().matches(".*\\d.*")){
                         int tab4 = Integer.parseInt(tf4.getText().trim());
                         switch (tab4) {
-                            case 0: MyPanel.N[8] = true;  MyPanel.B[8] = false; MyPanel.S[8]= false; MyPanel.P[12] = true; break;
-                            case 1: MyPanel.N[8] = true;  MyPanel.B[8]= false; MyPanel.S[8] = true; MyPanel.P[13] = true; break;
-                            case 2: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= false; MyPanel.P[14] = true; break;
-                            case 3: MyPanel.N[9] = true; MyPanel.B[9] = false; MyPanel.S[9]= true; MyPanel.P[15] = true; break;
-                            case 4: MyPanel.N[10] = true; MyPanel.B[10] = false; MyPanel.S[10]= false; MyPanel.P[16] = true; break;
-                            case 5: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= false; MyPanel.P[5] = true; break;
-                            case 6: MyPanel.N[4] = true; MyPanel.B[4] = false; MyPanel.S[4]= true; MyPanel.P[6] = true; break;
-                            case 7: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= false; MyPanel.P[7] = true; break;
-                            case 8: MyPanel.N[5] = true; MyPanel.B[5] = false; MyPanel.S[5]= true; MyPanel.P[8] = true; break;
-                            case 9: MyPanel.N[6] = true; MyPanel.B[6] = false; MyPanel.S[6]= false; MyPanel.P[9] = true; break;
-                            case 10: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= false; MyPanel.P[10] = true; break;
-                            case 11: MyPanel.N[7] = true; MyPanel.B[7] = false; MyPanel.S[7]= true; MyPanel.P[11] = true; break;
+                            case 0: tab_Panel.N[8] = true;  tab_Panel.B[8] = false; tab_Panel.S[8]= false; tab_Panel.P[12] = true; break;
+                            case 1: tab_Panel.N[8] = true;  tab_Panel.B[8]= false; tab_Panel.S[8] = true; tab_Panel.P[13] = true; break;
+                            case 2: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= false; tab_Panel.P[14] = true; break;
+                            case 3: tab_Panel.N[9] = true; tab_Panel.B[9] = false; tab_Panel.S[9]= true; tab_Panel.P[15] = true; break;
+                            case 4: tab_Panel.N[10] = true; tab_Panel.B[10] = false; tab_Panel.S[10]= false; tab_Panel.P[16] = true; break;
+                            case 5: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= false; tab_Panel.P[5] = true; break;
+                            case 6: tab_Panel.N[4] = true; tab_Panel.B[4] = false; tab_Panel.S[4]= true; tab_Panel.P[6] = true; break;
+                            case 7: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= false; tab_Panel.P[7] = true; break;
+                            case 8: tab_Panel.N[5] = true; tab_Panel.B[5] = false; tab_Panel.S[5]= true; tab_Panel.P[8] = true; break;
+                            case 9: tab_Panel.N[6] = true; tab_Panel.B[6] = false; tab_Panel.S[6]= false; tab_Panel.P[9] = true; break;
+                            case 10: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= false; tab_Panel.P[10] = true; break;
+                            case 11: tab_Panel.N[7] = true; tab_Panel.B[7] = false; tab_Panel.S[7]= true; tab_Panel.P[11] = true; break;
                         }
                     }
                 }
@@ -1208,7 +1198,6 @@ public class tabcreator {
                 tf3.setText("    ");
                 tf4.setText("    ");
                 mbvalue = false;
-                //mb.setVisible(false);
                 pm.setVisible(false);
                 panel.repaint();
             }
@@ -1218,28 +1207,28 @@ public class tabcreator {
         {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                if((MyPanel.N[1])&&(MyPanel.S[1])) MyPanel.P[0]=false;
-                if((MyPanel.N[2])&&((MyPanel.S[2]) || (MyPanel.B[2])))  MyPanel.P[2]=false;
-                if((MyPanel.N[3])&&((MyPanel.S[3]) || (MyPanel.B[3]))) MyPanel.P[4]=false;
-                if((MyPanel.N[4])&&((MyPanel.S[4]) || (MyPanel.B[4]))) MyPanel.P[5]=false;
-                if((MyPanel.N[5])&&((MyPanel.S[5]) || (MyPanel.B[5]))) MyPanel.P[7]=false;
-                if((MyPanel.N[6])&&((MyPanel.S[6]) || (MyPanel.B[6]))) MyPanel.P[9]=false;
-                if((MyPanel.N[7])&&((MyPanel.S[7]) || (MyPanel.B[7]))) MyPanel.P[10]=false;
-                if((MyPanel.N[8])&&((MyPanel.S[8]) || (MyPanel.B[8]))) MyPanel.P[12]=false;
-                if((MyPanel.N[9])&&((MyPanel.S[9]) || (MyPanel.B[9]))) MyPanel.P[14]=false;
-                if((MyPanel.N[10])&&((MyPanel.S[10]) || (MyPanel.B[10]))) MyPanel.P[16]=false;
-                if((MyPanel.N[11])&&((MyPanel.S[11]) || (MyPanel.B[11]))) MyPanel.P[17]=false;
-                if((MyPanel.N[12])&&((MyPanel.S[12]) || (MyPanel.B[12]))) MyPanel.P[19]=false;
-                if((MyPanel.N[13])&&((MyPanel.S[13]) || (MyPanel.B[13]))) MyPanel.P[21]=false;
-                if((MyPanel.N[14])&&((MyPanel.S[14]) || (MyPanel.B[14]))) MyPanel.P[22]=false;
-                if((MyPanel.N[15])&&((MyPanel.S[15]) || (MyPanel.B[15])))  MyPanel.P[24]=false;
-                if((MyPanel.N[16])&&((MyPanel.S[16]) || (MyPanel.B[16]))) MyPanel.P[26]=false;
-                if((MyPanel.N[17])&&((MyPanel.S[17]) || (MyPanel.B[17]))) MyPanel.P[28]=false;
-                if((MyPanel.N[18])&&(MyPanel.B[18])) MyPanel.P[29]=false;
+                if((tab_Panel.N[1])&&(tab_Panel.S[1])) tab_Panel.P[0]=false;
+                if((tab_Panel.N[2])&&((tab_Panel.S[2]) || (tab_Panel.B[2])))  tab_Panel.P[2]=false;
+                if((tab_Panel.N[3])&&((tab_Panel.S[3]) || (tab_Panel.B[3]))) tab_Panel.P[4]=false;
+                if((tab_Panel.N[4])&&((tab_Panel.S[4]) || (tab_Panel.B[4]))) tab_Panel.P[5]=false;
+                if((tab_Panel.N[5])&&((tab_Panel.S[5]) || (tab_Panel.B[5]))) tab_Panel.P[7]=false;
+                if((tab_Panel.N[6])&&((tab_Panel.S[6]) || (tab_Panel.B[6]))) tab_Panel.P[9]=false;
+                if((tab_Panel.N[7])&&((tab_Panel.S[7]) || (tab_Panel.B[7]))) tab_Panel.P[10]=false;
+                if((tab_Panel.N[8])&&((tab_Panel.S[8]) || (tab_Panel.B[8]))) tab_Panel.P[12]=false;
+                if((tab_Panel.N[9])&&((tab_Panel.S[9]) || (tab_Panel.B[9]))) tab_Panel.P[14]=false;
+                if((tab_Panel.N[10])&&((tab_Panel.S[10]) || (tab_Panel.B[10]))) tab_Panel.P[16]=false;
+                if((tab_Panel.N[11])&&((tab_Panel.S[11]) || (tab_Panel.B[11]))) tab_Panel.P[17]=false;
+                if((tab_Panel.N[12])&&((tab_Panel.S[12]) || (tab_Panel.B[12]))) tab_Panel.P[19]=false;
+                if((tab_Panel.N[13])&&((tab_Panel.S[13]) || (tab_Panel.B[13]))) tab_Panel.P[21]=false;
+                if((tab_Panel.N[14])&&((tab_Panel.S[14]) || (tab_Panel.B[14]))) tab_Panel.P[22]=false;
+                if((tab_Panel.N[15])&&((tab_Panel.S[15]) || (tab_Panel.B[15])))  tab_Panel.P[24]=false;
+                if((tab_Panel.N[16])&&((tab_Panel.S[16]) || (tab_Panel.B[16]))) tab_Panel.P[26]=false;
+                if((tab_Panel.N[17])&&((tab_Panel.S[17]) || (tab_Panel.B[17]))) tab_Panel.P[28]=false;
+                if((tab_Panel.N[18])&&(tab_Panel.B[18])) tab_Panel.P[29]=false;
 
                 find_best_tab();
                 find_all_tabs();
-                MyPanel.showtab = true;
+                tab_Panel.showtab = true;
                 panel.repaint();
             }
         });
@@ -1248,27 +1237,27 @@ public class tabcreator {
         {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                if((MyPanel.N[1])&&(MyPanel.S[1])) MyPanel.P[0]=false;
-                if((MyPanel.N[2])&&((MyPanel.S[2]) || (MyPanel.B[2])))  MyPanel.P[2]=false;
-                if((MyPanel.N[3])&&((MyPanel.S[3]) || (MyPanel.B[3]))) MyPanel.P[4]=false;
-                if((MyPanel.N[4])&&((MyPanel.S[4]) || (MyPanel.B[4]))) MyPanel.P[5]=false;
-                if((MyPanel.N[5])&&((MyPanel.S[5]) || (MyPanel.B[5]))) MyPanel.P[7]=false;
-                if((MyPanel.N[6])&&((MyPanel.S[6]) || (MyPanel.B[6]))) MyPanel.P[9]=false;
-                if((MyPanel.N[7])&&((MyPanel.S[7]) || (MyPanel.B[7]))) MyPanel.P[10]=false;
-                if((MyPanel.N[8])&&((MyPanel.S[8]) || (MyPanel.B[8]))) MyPanel.P[12]=false;
-                if((MyPanel.N[9])&&((MyPanel.S[9]) || (MyPanel.B[9]))) MyPanel.P[14]=false;
-                if((MyPanel.N[10])&&((MyPanel.S[10]) || (MyPanel.B[10]))) MyPanel.P[16]=false;
-                if((MyPanel.N[11])&&((MyPanel.S[11]) || (MyPanel.B[11]))) MyPanel.P[17]=false;
-                if((MyPanel.N[12])&&((MyPanel.S[12]) || (MyPanel.B[12]))) MyPanel.P[19]=false;
-                if((MyPanel.N[13])&&((MyPanel.S[13]) || (MyPanel.B[13]))) MyPanel.P[21]=false;
-                if((MyPanel.N[14])&&((MyPanel.S[14]) || (MyPanel.B[14]))) MyPanel.P[22]=false;
-                if((MyPanel.N[15])&&((MyPanel.S[15]) || (MyPanel.B[15])))  MyPanel.P[24]=false;
-                if((MyPanel.N[16])&&((MyPanel.S[16]) || (MyPanel.B[16]))) MyPanel.P[26]=false;
-                if((MyPanel.N[17])&&((MyPanel.S[17]) || (MyPanel.B[17]))) MyPanel.P[28]=false;
-                if((MyPanel.N[18])&&(MyPanel.B[18])) MyPanel.P[29]=false;
+                if((tab_Panel.N[1])&&(tab_Panel.S[1])) tab_Panel.P[0]=false;
+                if((tab_Panel.N[2])&&((tab_Panel.S[2]) || (tab_Panel.B[2])))  tab_Panel.P[2]=false;
+                if((tab_Panel.N[3])&&((tab_Panel.S[3]) || (tab_Panel.B[3]))) tab_Panel.P[4]=false;
+                if((tab_Panel.N[4])&&((tab_Panel.S[4]) || (tab_Panel.B[4]))) tab_Panel.P[5]=false;
+                if((tab_Panel.N[5])&&((tab_Panel.S[5]) || (tab_Panel.B[5]))) tab_Panel.P[7]=false;
+                if((tab_Panel.N[6])&&((tab_Panel.S[6]) || (tab_Panel.B[6]))) tab_Panel.P[9]=false;
+                if((tab_Panel.N[7])&&((tab_Panel.S[7]) || (tab_Panel.B[7]))) tab_Panel.P[10]=false;
+                if((tab_Panel.N[8])&&((tab_Panel.S[8]) || (tab_Panel.B[8]))) tab_Panel.P[12]=false;
+                if((tab_Panel.N[9])&&((tab_Panel.S[9]) || (tab_Panel.B[9]))) tab_Panel.P[14]=false;
+                if((tab_Panel.N[10])&&((tab_Panel.S[10]) || (tab_Panel.B[10]))) tab_Panel.P[16]=false;
+                if((tab_Panel.N[11])&&((tab_Panel.S[11]) || (tab_Panel.B[11]))) tab_Panel.P[17]=false;
+                if((tab_Panel.N[12])&&((tab_Panel.S[12]) || (tab_Panel.B[12]))) tab_Panel.P[19]=false;
+                if((tab_Panel.N[13])&&((tab_Panel.S[13]) || (tab_Panel.B[13]))) tab_Panel.P[21]=false;
+                if((tab_Panel.N[14])&&((tab_Panel.S[14]) || (tab_Panel.B[14]))) tab_Panel.P[22]=false;
+                if((tab_Panel.N[15])&&((tab_Panel.S[15]) || (tab_Panel.B[15])))  tab_Panel.P[24]=false;
+                if((tab_Panel.N[16])&&((tab_Panel.S[16]) || (tab_Panel.B[16]))) tab_Panel.P[26]=false;
+                if((tab_Panel.N[17])&&((tab_Panel.S[17]) || (tab_Panel.B[17]))) tab_Panel.P[28]=false;
+                if((tab_Panel.N[18])&&(tab_Panel.B[18])) tab_Panel.P[29]=false;
 
                 find_all_tabs();
-                MyPanel.showall = true;
+                tab_Panel.showall = true;
                 panel.repaint();
             }
         });
@@ -1288,7 +1277,7 @@ public class tabcreator {
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
-                File file = new File("data.txt"); //file.deleteOnExit();
+                File file = new File("temp.txt"); 
                 File f = new File("TABS.txt");
 
                 if(f.exists() && !f.isDirectory())
@@ -1299,11 +1288,11 @@ public class tabcreator {
                 File fileout = new File("TABS.txt");
                 int lines = 0;
                 BufferedReader countlines;
-                String s;
+                
                 try
                 {
                     countlines = new BufferedReader(new FileReader(file));
-                    while ((s = countlines.readLine()) != null)
+                    while ((countlines.readLine()) != null)
                     {
                         lines++;
                     }
@@ -1435,44 +1424,44 @@ public class tabcreator {
         pm = new JPopupMenu();
 
         l1 = new JLabel("String 1:");
-        test1 = new JPanel();
-        test1.add(l1);
+        p1 = new JPanel();
+        p1.add(l1);
         tf1 = new JTextField();
         tf1.setText("     ");
-        test1.add(tf1);
-        pm.add(test1);
+        p1.add(tf1);
+        pm.add(p1);
 
         l2 = new JLabel("String 2:");
-        test2 = new JPanel();
-        test2.add(l2);
+        p2 = new JPanel();
+        p2.add(l2);
         tf2 = new JTextField();
         tf2.setText("     ");
-        test2.add(tf2);
-        pm.add(test2);
+        p2.add(tf2);
+        pm.add(p2);
 
         l3 = new JLabel("String 3:");
-        test3 = new JPanel();
-        test3.add(l3);
+        p3 = new JPanel();
+        p3.add(l3);
         tf3 = new JTextField();
         tf3.setText("     ");
-        test3.add(tf3);
-        pm.add(test3);
+        p3.add(tf3);
+        pm.add(p3);
 
         l4 = new JLabel("String 4:");
-        test4 = new JPanel();
-        test4.add(l4);
+        p4 = new JPanel();
+        p4.add(l4);
         tf4 = new JTextField();
         tf4.setText("     ");
-        test4.add(tf4);
+        p4.add(tf4);
       
-        pm.add(test4);
+        pm.add(p4);
         panel.add(pm);
         pm.setVisible(false);
         panel.repaint();
 
-        myframe.getContentPane().add(panel);
-        myframe.pack();
-        myframe.setVisible(true);
+        main_frame.getContentPane().add(panel);
+        main_frame.pack();
+        main_frame.setVisible(true);
     }
 }
 
