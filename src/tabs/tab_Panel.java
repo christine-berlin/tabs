@@ -34,7 +34,11 @@ import javax.swing.JPanel;
 
  */
 
-
+/**
+ * Class <code>tab_Panel</code> displays the drawings of the piano notes and the ukulele tabs.
+ * @author Christine Merkel
+ *
+ */
 public class tab_Panel extends JPanel
 {
     static boolean[] P = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,

@@ -41,24 +41,106 @@ import javax.swing.JTextField;
  *
  */
 public class tabcreator {
-	/** */
-    public static JFrame main_frame;
-    public static JPanel panel, buttonpanel, buttonpanel2;
-    public static JButton buttonselectmusicXML, buttonlowG, buttonhighG, convertbutton, clearbutton, makeTABfile, barline, showAll, tabCombinations;
+	/** Frame of the GUI */
+    public static JFrame frame;
+    
+    /** Mainpanel that contains all other panels */
+    public static JPanel panel;
+    
+    /** Panel that contains all the buttons */
+    public static JPanel button_panel;
+    
+    /** Selects a MusicXML file */
+    public static JButton selectmusicXML;
+    
+    /** Selects Low G */
+    public static JButton lowG;
+    
+    /** Selects High G */
+    public static JButton highG; 
+    
+    /** Converts the input note to the best ukulele tab */
+    public static JButton convert;
+    
+    /** Clears the input */ 
+    public static JButton clear;
+    
+    /** Makes a ukulele tab file from the input notes */
+    public static JButton makeTABfile; 
+    
+    /** Inserts a barline in the ukulele tab file */
+    public static JButton barline; 
+    
+    /** Converts the input note to all possible ukulele tabs */
+    public static JButton convert_all; 
+    
+    /** Converts ukulele tab to piano note */
+    public static JButton convert_to_piano;
+    
+    /** Mouse position */
     public static Point mousePT;
-    public static boolean bar2 = false;
+    
+    /** Bar is inserted in tab file or not */
+    public static boolean insert_bar;
+    
+    /**  Filechooser to select musicxml file */
     public static JFileChooser filechooser;
-    public static HashMap<String, Integer> hash = new HashMap<String, Integer>();
-    public static HashMap<Integer, String> hash_tab = new HashMap<Integer, String>();
-    public static BufferedImage imageuke, imageclef;
-    public static JTextField tf4, tf1, tf2, tf3;
-    public static JMenuBar mb;
+    
+    /** Maps ukulele fret numbers to strings needed for tabfiles */
+    public static HashMap<Integer, String> hash_tab; 
+    
+    /** Ukulele Image */
+    public static BufferedImage imageuke;
+    
+    /** Clef Image */
+    public static BufferedImage imageclef;
+    
+    /** Textfield in popup menu to enter fret in String 1 */
+    public static JTextField tf1;
+    
+    /** Textfield in popup menu to enter fret in String 2 */
+    public static JTextField tf2;
+    
+    /** Textfield in popup menu to enter fret in String 3 */
+    public static JTextField tf3;
+    
+    /** Textfield in popup menu to enter fret in String 4 */
+    public static JTextField tf4;
+    
+    /** Popup menu bar to insert ukulele tabs */
     public static JPopupMenu pm;
-    public static Boolean mbvalue = false;
-    public static JLabel l1, l2, l3, l4;
-    public static JPanel p1, p2, p3, p4;
-
-    // Ukulele Strings order: {4, 3, 2, 1}
+    
+    /** Popup menu is showing or not */
+    public static boolean show_popup_menu;
+    
+    /** Label 1 for textfield 1 in the popup menu */
+    public static JLabel l1;
+    
+    /** Label 2 for textfield 2 in the popup menu */
+    public static JLabel l2;
+    
+    /** Label 3 for textfield 3 in the popup menu */
+    public static JLabel l3;
+    
+    /** Label 4 for textfield 4 in the popup menu */
+    public static JLabel l4;
+    
+    /** panel 1 for textfield 1 in the popup menu */
+    public static JPanel p1;
+    
+    /** panel 2 for textfield 2 in the popup menu */
+    public static JPanel p2;
+    
+    /** panel 3 for textfield 3 in the popup menu */
+    public static JPanel p3;
+    
+    /** panel 4 for textfield 4 in the popup menu */
+    public static JPanel p4;
+ 
+    /** Music note scale of a low g ukulele. The numbers are the frets in a string. The strings
+     *  are in in th eorder {4,3,2,1}. -1 means there is no fret for that tone. Most tones can be
+     *  played by multiple strings.
+     */
     public static int[][] LowG = new int[][]{
             {0,-1,-1,-1},
             {1,-1,-1,-1},
@@ -92,6 +174,10 @@ public class tabcreator {
             {-1,-1,-1,15},
     };
 
+    /** Music note scale of a high g ukulele. The numbers are the frets in a string. The strings
+     *  are in in th eorder {4,3,2,1}. -1 means there is no fret for that tone. Most tones can be
+     *  played by multiple strings.
+     */
     public static int[][] HighG = new int[][]{
             {-1,-1,-1,-1},
             {-1,-1,-1,-1},
@@ -126,8 +212,10 @@ public class tabcreator {
             {-1,-1,-1,15},
     };
 
-    public static void fill_hashtab()
+    /** Initializes the HashMap hash_tab */
+    public static void init_hashtab()
     {
+    	hash_tab = new HashMap<Integer, String>();
         hash_tab.put(-1, "-----");
         hash_tab.put(0, "--0--");
         hash_tab.put(1, "--1--");
@@ -148,9 +236,11 @@ public class tabcreator {
         hash_tab.put(16, "-16--");
         hash_tab.put(17, "-17--");
     }
-
-    public static void fill_hash_map()
+    
+    /** Initializes the HashMap hash */
+    public static HashMap<String,Integer> init_hashmap()
     {
+    	HashMap<String, Integer> hash = new HashMap<String, Integer>();
         hash.put("barline", -1);
         hash.put("G3no", 0);
         hash.put("G31", 1);
@@ -204,21 +294,29 @@ public class tabcreator {
         hash.put("B51", 29);
         hash.put("C6-1", 28);
         hash.put("C6no", 29);
+        
+        return hash;
     }
 
+    /**
+     * Saves input tabs in a temporary file 
+     */
     public static void save_tab()
     {
-        if(!bar2)
+        if(!insert_bar)
             appendStrToFile("temp.txt",
                     hash_tab.get(tab_Panel.tab[0])+hash_tab.get(tab_Panel.tab[1])+hash_tab.get(tab_Panel.tab[2])+hash_tab.get(tab_Panel.tab[3]));
-        if(bar2) appendStrToFile("temp.txt", "--|----|----|----|--");
+        if(insert_bar) appendStrToFile("temp.txt", "--|----|----|----|--");
         for(int i=0;i<tab_Panel.P.length;i++)tab_Panel.P[i] = false;
         for(int j=0;j<tab_Panel.tab.length;j++)tab_Panel.tab[j] = -1;
         for(int j=0;j<tab_Panel.alltabs.length;j++) tab_Panel.alltabs[j] = "";
         set_N_S_B_false();
-        bar2=false;
+        insert_bar=false;
     }
 
+    /**
+     * Finds all possible tabs for a piano note
+     */
     public static void find_all_tabs() {
     	ArrayList notes = new ArrayList();
     	initialize_notes(notes);
@@ -231,6 +329,8 @@ public class tabcreator {
             if(tab_Panel.lowG) tabmatrix[v]=LowG[t];
             if(tab_Panel.highG) tabmatrix[v]=HighG[t];
         }
+        
+        if (notes.size() == 0) return;
         
         for(int i=0;i<tabmatrix[0].length;i++)
         {
@@ -284,12 +384,18 @@ public class tabcreator {
         		if(tabmatrix[0][i]!=-1)
                 {
         		    panel_text_all_tabs(new int[] {i}, tabmatrix);
-                    append_string(new int[] {i});
+                    append_string(new int[] {i}); 
                 }
         	}
         }    
     }
     
+    /**
+     * Writes the tabs on the panel.
+     * 
+     * @param j          the strings
+     * @param tabmatrix  the frets
+     */
     public static void panel_text_all_tabs(int[] j, int[][] tabmatrix) {
     	String[] str = new String[j.length] ;
     	for (int i = 0; i<j.length; i++) {
@@ -299,6 +405,7 @@ public class tabcreator {
     	}
    
     }
+    
     
     public static void append_string(int[] i) {
     	for(int t=0;t<4;t++) {
@@ -318,6 +425,9 @@ public class tabcreator {
         }
     }
 
+    /**
+     * Finds the best tab for a piano note.
+     */
     public static void find_best_tab()
     {
         ArrayList notes = new ArrayList();
@@ -334,6 +444,8 @@ public class tabcreator {
             if(tab_Panel.highG) tabmatrix[v]=HighG[t];
         }
 
+        if (notes.size() == 0) return;
+        
         if(tabmatrix.length==1) 
         {
             for(int j=0;j<tabmatrix[0].length;j++)
@@ -405,6 +517,12 @@ public class tabcreator {
         if(tab > -1) panel_text_best_tab(paths.get(tab).getItems(), tabmatrix.length, tabmatrix);        
     }
     
+    /**
+     * Finds the tab with the shortest distance on the fretboard.
+     * 
+     * @param paths  all tabs corresponding to a piano note
+     * @return       the tab with the shortest distance
+     */
     public static int find_shortest_tab(List<tab_Array> paths) {
     	int delta = -1;
         int tab = -1;
@@ -443,6 +561,11 @@ public class tabcreator {
         }
     }
     
+    /**
+     * Appends "--x----x----x----x--" to the tabfile in case there is no tab found.
+     * 
+     * @param tabmatrix
+     */
     public static void append_error_string(int[][] tabmatrix) {
     	for(int i=0;i<tabmatrix[0].length;i++) tab_Panel.tab[i]= -1;
         tab_Panel.error = true;
@@ -450,8 +573,13 @@ public class tabcreator {
         appendStrToFile("temp.txt", str);
     }
 
-
-
+ 
+    /**
+     * Appends a string to a file.
+     * 
+     * @param fileName  name of the file
+     * @param str       string to append
+     */
     public static void appendStrToFile(String fileName, String str)
     {
         try
@@ -468,8 +596,14 @@ public class tabcreator {
         }
     }
 
+    /**
+     *  Reads an MusicXML file and creates a tab fule with corresponding ukulele tabs.
+     */
     public static void process_xmlfile()
     {
+    	HashMap<String, Integer> hash = new HashMap<String, Integer>();
+    	hash = init_hashmap(); 
+    	
         File file = new File("pitch.txt");
         file.deleteOnExit();
         BufferedReader countlines;
@@ -486,7 +620,7 @@ public class tabcreator {
                 {
                     String str2 = st.nextToken();
 
-                    if(str2.compareTo("barline")==0) bar2= true;
+                    if(str2.compareTo("barline")==0) insert_bar= true;
                     if((str2.compareTo("barline")!=0) && (hash.get(str2) != null)) tab_Panel.P[hash.get(str2)] = true;
                 }
 
@@ -502,7 +636,9 @@ public class tabcreator {
         catch (IOException e) {e.printStackTrace();}
     }
 
-    
+    /**
+     * Sets tab_Panel.S[], tab_Panel.B[], and  tab_Panel.N[] to false.    
+     */
     public static void set_N_S_B_false()
     {
         for(int i=0;i<tab_Panel.S.length;i++) tab_Panel.S[i]=false;
@@ -510,6 +646,13 @@ public class tabcreator {
         for(int i=0;i<tab_Panel.N.length;i++) tab_Panel.N[i]=false;
     }
 
+    /**
+     * Unzips files.
+     * 
+     * @param zipFilePath  path of the file
+     * @param destDir      destination path of the unzipped file
+     * @throws IOException in case of error
+     */
     private static void unzip(String zipFilePath, String destDir) throws IOException
     {
         File dir = new File(destDir);
@@ -544,10 +687,13 @@ public class tabcreator {
         fis.close();
     }
 
+    /**
+     * The application's main entry point. Defines the frame and all GUI components.
+     */
     public static void main(String[] args)
     {
-        fill_hash_map();
-        fill_hashtab();
+        init_hashmap();
+        init_hashtab();
 
         try {
             imageuke = ImageIO.read(tabcreator.class.getResource("/resources/uke.png"));
@@ -561,24 +707,24 @@ public class tabcreator {
             System.out.println("Exception Occurred" + e);
         }
 
-        main_frame = new JFrame("tabcreator");
-        main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        main_frame.getContentPane().setLayout(new BoxLayout(main_frame.getContentPane(),BoxLayout.Y_AXIS));
-        buttonlowG = new JButton("Low G");
-        buttonhighG = new JButton("High G");
-        buttonselectmusicXML = new JButton("select musicXML File");
+        frame = new JFrame("tabcreator");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
+        lowG = new JButton("Low G");
+        highG = new JButton("High G");
+        selectmusicXML = new JButton("select musicXML File");
         panel = new tab_Panel();
         panel.setPreferredSize(new Dimension(1000,500));
         panel.setBackground(Color.WHITE);
         filechooser = new JFileChooser();
 
 
-        buttonselectmusicXML.addActionListener(new ActionListener()
+        selectmusicXML.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
-                int returnVal = filechooser.showOpenDialog(main_frame);
+                int returnVal = filechooser.showOpenDialog(frame);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION)
                 {
@@ -597,7 +743,7 @@ public class tabcreator {
                             unzip(zipFilePath, destDir);
                             File folder = new File("output/");
                             xmlfile = folder.listFiles()[0];
-                            XML_parser parser = new XML_parser();
+                            MusicXML_parser parser = new MusicXML_parser();
                             parser.parse(xmlfile);
                             process_xmlfile();
                         }
@@ -607,7 +753,7 @@ public class tabcreator {
 
                     else
                     {
-                    	XML_parser parser = new XML_parser();
+                    	MusicXML_parser parser = new MusicXML_parser();
                         parser.parse(xmlfile);
                         process_xmlfile();
                     }
@@ -615,7 +761,7 @@ public class tabcreator {
             }
         });
 
-        buttonlowG.addActionListener(new ActionListener()
+        lowG.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent arg0)
@@ -627,7 +773,7 @@ public class tabcreator {
             }
         });
 
-        buttonhighG.addActionListener(new ActionListener()
+        highG.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent arg0)
@@ -645,12 +791,12 @@ public class tabcreator {
                 mousePT = mouseEvent.getPoint();
 
                 if (mouseEvent.getClickCount() == 2) {
-                    mbvalue = !mbvalue;
-                    pm.setVisible(mbvalue);
+                    show_popup_menu = !show_popup_menu;
+                    pm.setVisible(show_popup_menu);
                     Double x = mousePT.getX();
                     Double y = mousePT.getY();
 
-                    pm.show(main_frame.getContentPane(),x.intValue(), y.intValue());
+                    pm.show(frame.getContentPane(),x.intValue(), y.intValue());
                 }
             }
 
@@ -990,15 +1136,15 @@ public class tabcreator {
             }
         });
 
-        convertbutton= new JButton("Convert");
-        clearbutton = new JButton("Clear");
+        convert= new JButton("best tab");
+        clear = new JButton("Clear");
         makeTABfile = new JButton("makeTABfile");
         barline = new JButton("Insert bar '|'");
-        showAll = new JButton("Convert All");
-        tabCombinations = new JButton("All Tab Combinations");
+        convert_all = new JButton("all tabs");
+        convert_to_piano = new JButton("piano note");
 
 
-        tabCombinations.addActionListener(new ActionListener()
+        convert_to_piano.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent arg0)
@@ -1179,12 +1325,12 @@ public class tabcreator {
                         }
                     }
                 }
-
-                showAll.doClick();
+                
+                panel.repaint();
             }
         });
 
-        clearbutton.addActionListener(new ActionListener()
+        clear.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent arg0)
@@ -1194,13 +1340,13 @@ public class tabcreator {
                 tf2.setText("    ");
                 tf3.setText("    ");
                 tf4.setText("    ");
-                mbvalue = false;
+                show_popup_menu = false;
                 pm.setVisible(false);
                 panel.repaint();
             }
         });
 
-        convertbutton.addActionListener(new ActionListener()
+        convert.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -1230,7 +1376,7 @@ public class tabcreator {
             }
         });
 
-        showAll.addActionListener(new ActionListener()
+        convert_all.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -1264,8 +1410,8 @@ public class tabcreator {
             @Override
             public void actionPerformed(ActionEvent arg0)
             {
-                bar2 = true;
-                clearbutton.doClick();
+                insert_bar = true;
+                clear.doClick();
             }
         });
 
@@ -1405,18 +1551,18 @@ public class tabcreator {
             }
         });
 
-        buttonpanel2 = new JPanel();
-        buttonpanel2.add(buttonhighG);
-        buttonpanel2.add(buttonlowG);
-        buttonpanel2.add(buttonselectmusicXML);
+        button_panel = new JPanel();
+        button_panel.add(highG);
+        button_panel.add(lowG);
+        button_panel.add(selectmusicXML);
 
-        buttonpanel2.add(convertbutton);
-        buttonpanel2.add(showAll);
-        buttonpanel2.add(tabCombinations);
-        buttonpanel2.add(clearbutton);
-        buttonpanel2.add(makeTABfile);
-        buttonpanel2.add(barline);
-        panel.add(buttonpanel2);
+        button_panel.add(convert);
+        button_panel.add(convert_all);
+        button_panel.add(convert_to_piano);
+        button_panel.add(clear);
+        button_panel.add(makeTABfile);
+        button_panel.add(barline);
+        panel.add(button_panel);
 
         pm = new JPopupMenu();
 
@@ -1456,9 +1602,9 @@ public class tabcreator {
         pm.setVisible(false);
         panel.repaint();
 
-        main_frame.getContentPane().add(panel);
-        main_frame.pack();
-        main_frame.setVisible(true);
+        frame.getContentPane().add(panel);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
 

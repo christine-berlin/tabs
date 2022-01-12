@@ -13,7 +13,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class XML_parser {
+/**
+ * Class <code>MusicXML_parser</code> parses musicxml files. 
+ * @author Christine Merkel
+ *
+ */
+public class MusicXML_parser {
     public static String piano_part_id ="";
     public static String step = "";
     public static String octave= "";
