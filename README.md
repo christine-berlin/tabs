@@ -38,12 +38,12 @@ or ```.mxl``` file. Then a tabfile will be generated. A ```.musicxml``` or ```.m
 created by Programs like Musescore or Audiveris from a pdf file or a Pic.
   
 ## Show piano notes
-Double  click somewhere on the GUI, then a popmenu will show where you can enter a ukulele tab. Then click ```piano note```
+Double  click somewhere on the GUI, then a popmenu will show where you can enter a ukulele tab. Then click ```piano note```.
 and the corresponding piano note will be displayed.  
   
 ![picture6](pictures/piano1.png)
 
-
+The corresponding piano note will be displayed.  
 ![picture7](pictures/piano2.png)  
 
 ## Release 
