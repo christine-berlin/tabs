@@ -6,7 +6,7 @@ so one can play it without problems.
 
 ## GUI
 
-![picture1](pictures/pic1.png)
+![picture1](pictures/gui_new.png)
 
 ## About
 What Tabcreator does:
