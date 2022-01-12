@@ -40,6 +40,11 @@ created by Programs like Musescore or Audiveris from a pdf file or a Pic.
 ## Show piano notes
 Double  click somewhere on the GUI, then a popmenu will show where you can enter a ukulele tab. Then click ```piano note```
 and the corresponding piano note will be displayed.  
+  
+![picture6](pictures/piano1.png)
+
+
+![picture7](pictures/piano2.png)  
 
 ## Release 
 Find the release and download for Linux/Unix and Windows here:  ![Release](https://github.com/christine-berlin/tabs/releases)
