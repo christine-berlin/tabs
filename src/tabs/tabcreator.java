@@ -44,9 +44,8 @@ public class tabcreator {
 	/** */
     public static JFrame main_frame;
     public static JPanel panel, buttonpanel, buttonpanel2;
-    public static JButton buttonselectmusicXML, buttonlowG, buttonhighG ,convertbutton, clearbutton, makeTABfile, barline, showAll, tabCombinations;
+    public static JButton buttonselectmusicXML, buttonlowG, buttonhighG, convertbutton, clearbutton, makeTABfile, barline, showAll, tabCombinations;
     public static Point mousePT;
-    public static int[][] tabmatrix;
     public static boolean bar2 = false;
     public static JFileChooser filechooser;
     public static HashMap<String, Integer> hash = new HashMap<String, Integer>();
@@ -224,7 +223,7 @@ public class tabcreator {
     	ArrayList notes = new ArrayList();
     	initialize_notes(notes);
 
-        tabmatrix = new int[notes.size()][4];
+    	int[][] tabmatrix = new int[notes.size()][4];
 
         for(int v=0;v<notes.size();v++)
         {
@@ -251,7 +250,7 @@ public class tabcreator {
                                     {
                                         if((tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1)&& (tabmatrix[3][l]!=-1))
                                         {
-                                            panel_text_all_tabs(new int[] {i,j,k,l});
+                                            panel_text_all_tabs(new int[] {i,j,k,l}, tabmatrix);
                                             append_string(new int[] {i,j,k,l});
                                         }
                                     }
@@ -262,7 +261,7 @@ public class tabcreator {
         					{
         						if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1) && (i!=k) && (k!=j))
                                 { 
-                                    panel_text_all_tabs(new int[] {i,j,k});
+                                    panel_text_all_tabs(new int[] {i,j,k},tabmatrix);
                                     append_string(new int[] {i,j,k});
                                 }
         					}
@@ -273,7 +272,7 @@ public class tabcreator {
         			{
         				if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
         				{
-        					panel_text_all_tabs(new int[] {i,j});
+        					panel_text_all_tabs(new int[] {i,j}, tabmatrix);
         					append_string(new int[]{i,j});
         				}    
         			}        			
@@ -284,14 +283,14 @@ public class tabcreator {
         	{
         		if(tabmatrix[0][i]!=-1)
                 {
-        		    panel_text_all_tabs(new int[] {i});
+        		    panel_text_all_tabs(new int[] {i}, tabmatrix);
                     append_string(new int[] {i});
                 }
         	}
         }    
     }
     
-    public static void panel_text_all_tabs(int[] j) {
+    public static void panel_text_all_tabs(int[] j, int[][] tabmatrix) {
     	String[] str = new String[j.length] ;
     	for (int i = 0; i<j.length; i++) {
     		str[i] = "";
@@ -311,11 +310,9 @@ public class tabcreator {
     }
     
     public static void initialize_notes(ArrayList notes) {
-    	int number_of_notes=0;
         for (int i=0;i<tab_Panel.P.length;i++)
         {
             if (tab_Panel.P[i]==true) {
-                number_of_notes++;
                 notes.add(i);
             }
         }
@@ -328,7 +325,7 @@ public class tabcreator {
         initialize_notes(notes);
         int tab = 0;
        
-        tabmatrix = new int[notes.size()][4];
+        int[][] tabmatrix = new int[notes.size()][4];
 
         for(int v=0;v<notes.size();v++)
         {
@@ -404,8 +401,8 @@ public class tabcreator {
         }   
         
         tab = find_shortest_tab(paths);
-        if(tab == -1) append_error_string();
-        if(tab > -1) panel_text_best_tab(paths.get(tab).getItems(), tabmatrix.length);        
+        if(tab == -1) append_error_string(tabmatrix);
+        if(tab > -1) panel_text_best_tab(paths.get(tab).getItems(), tabmatrix.length, tabmatrix);        
     }
     
     public static int find_shortest_tab(List<tab_Array> paths) {
@@ -433,7 +430,7 @@ public class tabcreator {
         return tab;
     }
     
-    public static void panel_text_best_tab(int[] items, int n) {
+    public static void panel_text_best_tab(int[] items, int n, int[][] tabmatrix) {
     	int[] w = new int[]{-1,-1,-1,-1};
     	w = items;
 
@@ -446,7 +443,7 @@ public class tabcreator {
         }
     }
     
-    public static void append_error_string() {
+    public static void append_error_string(int[][] tabmatrix) {
     	for(int i=0;i<tabmatrix[0].length;i++) tab_Panel.tab[i]= -1;
         tab_Panel.error = true;
         String str = "--x----x----x----x--";
