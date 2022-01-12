@@ -11,7 +11,8 @@ so one can play it without problems.
 ## About
 What Tabcreator does:
 * <span style="color:grey"> Create Ukulele Tab sheets
-* <span style="color:grey"> Transcribe piano sheet music ion ukulele tab sheet
+* <span style="color:grey"> Transcribe piano sheet music (musicxml files) to ukulele tab sheet
+* <span style="color:grey"> Shows piano notes of a ukulele tab  
 
 ## Create ukuele tab sheets
 To find the TAB for a chord (fig. 2.1) click on the notes (fig. 2.2) and then click the ```best tab``` button.
@@ -35,6 +36,10 @@ To save all the generated tabs to a file click the ```make tabfile``` button, an
 Click the ```select musicxml file``` button. Then select a ```.musicxml```
 or ```.mxl``` file. Then a tabfile will be generated. A ```.musicxml``` or ```.mxl``` file can be
 created by Programs like Musescore or Audiveris from a pdf file or a Pic.
+  
+## Show piano notes
+Double  click somewhere on the GUI, then a popmenu will show where you can enter a ukulele tab. Then click ```piano note```
+and the corresponding piano note will be displayed.  
 
 ## Release 
 Find the release and download for Linux/Unix and Windows here:  ![Release](https://github.com/christine-berlin/tabs/releases)
