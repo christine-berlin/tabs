@@ -431,7 +431,8 @@ public class tabcreator {
     public static void find_best_tab()
     {
         ArrayList notes = new ArrayList();
-        List<tab_Array> paths = new ArrayList<tab_Array>();
+        //List<tab_Array> paths = new ArrayList<tab_Array>();
+        List<tabs_Array> paths = new ArrayList<tabs_Array>();
         initialize_notes(notes);
         int tab = 0;
        
@@ -466,7 +467,7 @@ public class tabcreator {
                 {
                     if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
                     {
-                        paths.add(new tab_Array(tabmatrix[0][i],tabmatrix[1][j],-1,-1));
+                        paths.add(new tabs_Array(tabmatrix[0][i],tabmatrix[1][j],-1,-1));
                     }
                 }
             }
@@ -482,7 +483,7 @@ public class tabcreator {
                     {
                         if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1) && (i!=k) && (k!=j))
                         {
-                            paths.add(new tab_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],-1));
+                            paths.add(new tabs_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],-1));
                         }
                     }
                 }
@@ -503,7 +504,7 @@ public class tabcreator {
                             {
                                 if((tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1)&& (tabmatrix[3][l]!=-1))
                                 {
-                                    paths.add(new tab_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],tabmatrix[3][l]));
+                                    paths.add(new tabs_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],tabmatrix[3][l]));
                                 }
                             }
                         }
@@ -523,7 +524,7 @@ public class tabcreator {
      * @param paths  all tabs corresponding to a piano note
      * @return       the tab with the shortest distance
      */
-    public static int find_shortest_tab(List<tab_Array> paths) {
+    public static int find_shortest_tab(List<tabs_Array> paths) {
     	int delta = -1;
         int tab = -1;
         for(int i=0; i<paths.size();i++)
@@ -1605,6 +1606,21 @@ public class tabcreator {
         frame.getContentPane().add(panel);
         frame.pack();
         frame.setVisible(true);
+    }
+    
+    /**
+     * Class <code>tabs_Array</code> creates arrays for tabs. 
+     * @author Christine Merkel
+     *
+     */
+    public static class tabs_Array {
+    	public tabs_Array(int n1, int n2, int n3, int n4)
+        {
+            items = new int[]{n1,n2,n3,n4};
+        }
+
+        private int items[];
+        public  int[] getItems() { return items; }
     }
 }
 
