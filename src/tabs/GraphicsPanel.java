@@ -39,7 +39,7 @@ import javax.swing.JPanel;
  * @author Christine Merkel
  *
  */
-public class tab_Panel extends JPanel
+public class GraphicsPanel extends JPanel
 {
     static boolean[] P = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
@@ -50,8 +50,8 @@ public class tab_Panel extends JPanel
     static boolean[] B = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false};
     static int[] tab = new int[]{-1,-1,-1,-1};
-    static String[] alltabs = new String[]{"", "","",""};
-    static boolean showtab, showall;
+    static String[] allTabs = new String[]{"", "","",""};
+    static boolean showBestTab, showAllTabs;
     static boolean error = false;
     static boolean highG = false;
     static boolean lowG = true;
@@ -68,8 +68,8 @@ public class tab_Panel extends JPanel
     {
         super.paintComponent(g);
 
-        g.drawImage(tabcreator.imageclef, 0, 150, 60, 120, null);
-        g.drawImage(tabcreator.imageuke, 250, 20, 650, 440, null);
+        g.drawImage(TabCreator.imageclef, 0, 150, 60, 120, null);
+        g.drawImage(TabCreator.imageuke, 250, 20, 650, 440, null);
 
         g.setColor(Color.GREEN);
         g.drawLine(10, 150, 165+50, 150);
@@ -251,7 +251,7 @@ public class tab_Panel extends JPanel
         if(lowG) g.drawString("LOW G", 20, 60);
         if (highG) g.drawString("HIGH G", 20, 60);
 
-        if(showtab)
+        if(showBestTab)
         {
             g.setColor(Color.CYAN);
             if(error)
@@ -278,11 +278,11 @@ public class tab_Panel extends JPanel
                 if(tab[1] != -1) g.drawString(str1+String.valueOf(tab[1]), tab_x, tab_y3+15);
                 if(tab[0] != -1) g.drawString(str0+String.valueOf(tab[0]), tab_x, tab_y4+15);
             }
-            showtab = false;
+            showBestTab = false;
             error = false;
         }
 
-        if(showall)
+        if(showAllTabs)
         {
             g.setColor(Color.CYAN);
             if(error)
@@ -296,12 +296,12 @@ public class tab_Panel extends JPanel
             {
                 Font fonttab = new Font("Verdana", Font.ITALIC, 35);
                 g.setFont(fonttab);
-                g.drawString(alltabs[3], tab_x, tab_y1+15);
-                g.drawString(alltabs[2], tab_x, tab_y2+15);
-                g.drawString(alltabs[1], tab_x, tab_y3+15);
-                g.drawString(alltabs[0], tab_x, tab_y4+15);
+                g.drawString(allTabs[3], tab_x, tab_y1+15);
+                g.drawString(allTabs[2], tab_x, tab_y2+15);
+                g.drawString(allTabs[1], tab_x, tab_y3+15);
+                g.drawString(allTabs[0], tab_x, tab_y4+15);
             }
-            showall = false;
+            showAllTabs = false;
             error = false;
         }
     }

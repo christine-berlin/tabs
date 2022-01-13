@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
  * @author Christine Merkel
  *
  */
-public class MusicXML_parser {
+public class MusicxmlParser {
     public static String piano_part_id ="";
     public static String step = "";
     public static String octave= "";
