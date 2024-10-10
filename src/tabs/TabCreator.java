@@ -419,95 +419,102 @@ public class TabCreator {
     /**
      * Finds the best tab for a piano note.
      */
-    public static void find_best_tab()
-    {
+    
+    public static void find_best_tab() {
         ArrayList notes = new ArrayList();
-        //List<tab_Array> paths = new ArrayList<tab_Array>();
-        List<tabs_Array> paths = new ArrayList<tabs_Array>();
+        List<tabs_Array> paths = new ArrayList<>();
         initialize_notes(notes);
-        int tab = 0;
-       
-        int[][] tabmatrix = new int[notes.size()][4];
-
-        for(int v=0;v<notes.size();v++)
-        {
-            int t= (int) notes.get(v);
-            if(GraphicsPanel.lowG) tabmatrix[v]=LowG[t];
-            if(GraphicsPanel.highG) tabmatrix[v]=HighG[t];
-        }
-
-        if (notes.size() == 0) return;
         
-        if(tabmatrix.length==1) 
-        {
-            for(int j=0;j<tabmatrix[0].length;j++)
-            {
-                if(tabmatrix[0][j]!=-1) 
-                {
-                    GraphicsPanel.tab[j]=tabmatrix[0][j];
-                	return;
-                }
-            }
+        if (notes.size() == 0) return; // Exit early if no notes
+
+        int[][] tabmatrix = new int[notes.size()][4];
+        initialize_tabmatrix(notes, tabmatrix);
+
+        // Handle single note case
+        if (tabmatrix.length == 1) {
+            set_single_tab(tabmatrix[0]);
+            return;
         }
 
-        if(tabmatrix.length==2)
-        {
-            for(int i=0;i<tabmatrix[0].length;i++)
-            {
-                for(int j=0;j<tabmatrix[1].length;j++)
-                {
-                    if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
-                    {
-                        paths.add(new tabs_Array(tabmatrix[0][i],tabmatrix[1][j],-1,-1));
-                    }
-                }
+        // Handle multiple notes
+        generate_possible_tabs(tabmatrix, paths);
+        
+        int tab = find_shortest_tab(paths);
+        if (tab == -1) {
+            append_error_string(tabmatrix);
+        } else {
+            panel_text_best_tab(paths.get(tab).getItems(), tabmatrix.length, tabmatrix);
+        }
+    }
+
+    private static void initialize_tabmatrix(ArrayList notes, int[][] tabmatrix) {
+        for (int v = 0; v < notes.size(); v++) {
+            int t = (int) notes.get(v);
+            if (GraphicsPanel.lowG) tabmatrix[v] = LowG[t];
+            if (GraphicsPanel.highG) tabmatrix[v] = HighG[t];
+        }
+    }
+
+    private static void set_single_tab(int[] tabrow) {
+        for (int j = 0; j < tabrow.length; j++) {
+            if (tabrow[j] != -1) {
+                GraphicsPanel.tab[j] = tabrow[j];
+                return;
             }
         }
+    }
 
-        if(tabmatrix.length==3)
-        {
-            for(int i=0;i<tabmatrix[0].length;i++)
-            {
-                for(int j=0;j<tabmatrix[1].length;j++)
-                {
-                    for(int k=0;k<tabmatrix[2].length;k++)
-                    {
-                        if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1) && (i!=k) && (k!=j))
-                        {
-                            paths.add(new tabs_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],-1));
-                        }
-                    }
-                }
-            }
+    private static void generate_possible_tabs(int[][] tabmatrix, List<tabs_Array> paths) {
+        int numNotes = tabmatrix.length;
+        
+        // Generate all possible valid tab combinations based on matrix length
+        switch (numNotes) {
+            case 2:
+                find_combinations(tabmatrix, paths, 2);
+                break;
+            case 3:
+                find_combinations(tabmatrix, paths, 3);
+                break;
+            case 4:
+                find_combinations(tabmatrix, paths, 4);
+                break;
         }
+    }
 
-        if(tabmatrix.length==4)
-        {
-            for(int i=0;i<tabmatrix[0].length;i++)
-            {
-                for(int j=0;j<tabmatrix[1].length;j++)
-                {
-                    for(int k=0;k<tabmatrix[2].length;k++)
-                    {
-                        for(int l=0;l<tabmatrix[3].length;l++)
-                        {
-                            if((i!=j) && (j!=k) && (k!=i) && (l!=k) && (l!=j) && (l!=i))
-                            {
-                                if((tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1)&& (tabmatrix[3][l]!=-1))
-                                {
-                                    paths.add(new tabs_Array(tabmatrix[0][i],tabmatrix[1][j],tabmatrix[2][k],tabmatrix[3][l]));
+    private static void find_combinations(int[][] tabmatrix, List<tabs_Array> paths, int numNotes) {
+        for (int i = 0; i < tabmatrix[0].length; i++) {
+            for (int j = 0; j < tabmatrix[1].length; j++) {
+                if (numNotes >= 3) {
+                    for (int k = 0; k < tabmatrix[2].length; k++) {
+                        if (numNotes == 4) {
+                            for (int l = 0; l < tabmatrix[3].length; l++) {
+                                if (is_valid_combination(new int[]{i, j, k, l}, tabmatrix)) {
+                                    paths.add(new tabs_Array(tabmatrix[0][i], tabmatrix[1][j], tabmatrix[2][k], tabmatrix[3][l]));
                                 }
                             }
+                        } else if (is_valid_combination(new int[]{i, j, k}, tabmatrix)) {
+                            paths.add(new tabs_Array(tabmatrix[0][i], tabmatrix[1][j], tabmatrix[2][k], -1));
                         }
                     }
+                } else if (is_valid_combination(new int[]{i, j}, tabmatrix)) {
+                    paths.add(new tabs_Array(tabmatrix[0][i], tabmatrix[1][j], -1, -1));
                 }
             }
-        }   
-        
-        tab = find_shortest_tab(paths);
-        if(tab == -1) append_error_string(tabmatrix);
-        if(tab > -1) panel_text_best_tab(paths.get(tab).getItems(), tabmatrix.length, tabmatrix);        
+        }
     }
+
+    private static boolean is_valid_combination(int[] indices, int[][] tabmatrix) {
+        for (int i = 0; i < indices.length; i++) {
+            if (tabmatrix[i][indices[i]] == -1) return false;
+            for (int j = i + 1; j < indices.length; j++) {
+                if (indices[i] == indices[j]) return false;
+            }
+        }
+        return true;
+    }
+
+    
+    
     
     /**
      * Finds the tab with the shortest distance on the fretboard.
