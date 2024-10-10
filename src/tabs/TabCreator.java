@@ -318,77 +318,59 @@ public class TabCreator {
      * Finds all possible tabs for a piano note
      */
     public static void find_all_tabs() {
-    	ArrayList notes = new ArrayList();
-    	initialize_notes(notes);
+        ArrayList<Integer> notes = new ArrayList<>();
+        initialize_notes(notes);
 
-    	int[][] tabmatrix = new int[notes.size()][4];
+        if (notes.isEmpty()) return;
 
-        for(int v=0;v<notes.size();v++)
-        {
-            int t= (int) notes.get(v); 
-            if(GraphicsPanel.lowG) tabmatrix[v]=LowG[t];
-            if(GraphicsPanel.highG) tabmatrix[v]=HighG[t];
+        int[][] tabmatrix = new int[notes.size()][4];
+
+        // Initialize the tabmatrix based on lowG and highG
+        for (int v = 0; v < notes.size(); v++) {
+            int t = notes.get(v);
+            if (GraphicsPanel.lowG) tabmatrix[v] = LowG[t];
+            if (GraphicsPanel.highG) tabmatrix[v] = HighG[t];
         }
-        
-        if (notes.size() == 0) return;
-        
-        for(int i=0;i<tabmatrix[0].length;i++)
-        {
-        	if(tabmatrix.length>=2) 
-        	{
-        		for(int j=0;j<tabmatrix[1].length;j++)
-                {
-        			if(tabmatrix.length>=3) 
-                	{
-        				for(int k=0;k<tabmatrix[2].length;k++)
-                        {
-        					if(tabmatrix.length>=4) 
-                        	{
-        						for(int l=0;l<tabmatrix[3].length;l++)
-                                {
-                                    if((i!=j) && (j!=k) && (k!=i) && (l!=k) && (l!=j) && (l!=i))
-                                    {
-                                        if((tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1)&& (tabmatrix[3][l]!=-1))
-                                        {
-                                            panel_text_all_tabs(new int[] {i,j,k,l}, tabmatrix);
-                                            append_string(new int[] {i,j,k,l});
-                                        }
-                                    }
-                                } 	
-                        	}
-        					
-        					else
-        					{
-        						if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) && (tabmatrix[2][k]!=-1) && (i!=k) && (k!=j))
-                                { 
-                                    panel_text_all_tabs(new int[] {i,j,k},tabmatrix);
-                                    append_string(new int[] {i,j,k});
-                                }
-        					}
-                        }
-                	}
-        			
-        			else
-        			{
-        				if((i!=j) && (tabmatrix[0][i]!=-1) && (tabmatrix[1][j]!=-1) )
-        				{
-        					panel_text_all_tabs(new int[] {i,j}, tabmatrix);
-        					append_string(new int[]{i,j});
-        				}    
-        			}        			
-                }
-        	}
-        	
-        	else
-        	{
-        		if(tabmatrix[0][i]!=-1)
-                {
-        		    panel_text_all_tabs(new int[] {i}, tabmatrix);
-                    append_string(new int[] {i}); 
-                }
-        	}
-        }    
+
+        // Start recursive generation of all tab combinations
+        generateTabs(tabmatrix, new int[tabmatrix.length], 0);
     }
+
+    // Recursive function to generate and validate combinations of tabs
+    private static void generateTabs(int[][] tabmatrix, int[] indices, int level) {
+        if (level == tabmatrix.length) {
+            if (isValidCombination(indices, tabmatrix)) {
+                panel_text_all_tabs(indices, tabmatrix);
+                append_string(indices);
+            }
+            return;
+        }
+
+        for (int i = 0; i < tabmatrix[level].length; i++) {
+            indices[level] = i;
+            generateTabs(tabmatrix, indices, level + 1);
+        }
+    }
+
+    // Helper method to validate if the indices combination is valid
+    private static boolean isValidCombination(int[] indices, int[][] tabmatrix) {
+        // Check if values in tabmatrix for the given indices are valid (-1 means invalid)
+        for (int i = 0; i < indices.length; i++) {
+            if (tabmatrix[i][indices[i]] == -1) return false;
+        }
+
+        // Check if all indices are distinct
+        for (int i = 0; i < indices.length - 1; i++) {
+            for (int j = i + 1; j < indices.length; j++) {
+                if (indices[i] == indices[j]) return false;
+            }
+        }
+        return true;
+    }
+
+    
+    
+    
     
     /**
      * Writes the tabs on the graphics panel.
